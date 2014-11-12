@@ -1,0 +1,3 @@
+﻿Test of aggregate exception with inner ex.
+Ex one
+Ex two
