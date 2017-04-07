@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using System.Text;
 using Couchbase;
 using Couchbase.Core;
@@ -25,24 +24,22 @@ namespace MeepMeep.Workloads
             get { return _description; }
         }
 
-        public AddAndGetJsonDocumentWorkload(IWorkloadDocKeyGenerator docKeyGenerator, int workloadSize, int warmupMs, string sampleDocument = null)
-            : base(docKeyGenerator, workloadSize, warmupMs)
+        public AddAndGetJsonDocumentWorkload(IWorkloadDocKeyGenerator docKeyGenerator, int workloadSize, int warmupMs, bool enableTiming, string sampleDocument = null)
+            : base(docKeyGenerator, workloadSize, warmupMs, enableTiming)
         {
             SampleDocument = sampleDocument ?? SampleDocuments.Default;
             _description = string.Format("ExecuteStore (Add) and ExecuteGet by random key, {0} times.", WorkloadSize);
         }
 
-        protected override WorkloadOperationResult OnExecuteStep(IBucket bucket, int workloadIndex, int docIndex, Stopwatch sw)
+        protected override WorkloadOperationResult OnExecuteStep(IBucket bucket, int workloadIndex, int docIndex, Func<TimeSpan> getTiming)
         {
             var key = DocKeyGenerator.Generate(workloadIndex, docIndex);
             var randomKey = DocKeyGenerator.Generate(workloadIndex, docIndex);
 
-            sw.Start();
             var storeOpResult = bucket.Upsert(key, SampleDocument);
             var getOpResult = bucket.Get<string>(randomKey);
-            sw.Stop();
 
-            return new WorkloadOperationResult(storeOpResult.Success && getOpResult.Success, GetMessage(storeOpResult, getOpResult), sw.Elapsed)
+            return new WorkloadOperationResult(storeOpResult.Success && getOpResult.Success, GetMessage(storeOpResult, getOpResult), getTiming())
             {
                 DocSize = GetDocSize(getOpResult) + SampleDocument.Length
             };

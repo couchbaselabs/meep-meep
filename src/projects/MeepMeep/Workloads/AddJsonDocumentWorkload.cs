@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+﻿using System;
 using Couchbase.Core;
 using MeepMeep.Docs;
 
@@ -20,8 +20,8 @@ namespace MeepMeep.Workloads
             get { return _description; }
         }
 
-        public AddJsonDocumentWorkload(IWorkloadDocKeyGenerator docKeyGenerator, int workloadSize, int warmupMs, string sampleDocument = null)
-            : base(docKeyGenerator, workloadSize, warmupMs)
+        public AddJsonDocumentWorkload(IWorkloadDocKeyGenerator docKeyGenerator, int workloadSize, int warmupMs, bool enableTiming, string sampleDocument = null)
+            : base(docKeyGenerator, workloadSize, warmupMs, enableTiming)
         {
             SampleDocument = sampleDocument ?? SampleDocuments.Default;
             _description = string.Format("ExecuteStore (Add) of {0} JSON doc(s) with doc size: {1}.",
@@ -29,15 +29,13 @@ namespace MeepMeep.Workloads
                 SampleDocument.Length);
         }
 
-        protected override WorkloadOperationResult OnExecuteStep(IBucket bucket, int workloadIndex, int docIndex, Stopwatch sw)
+        protected override WorkloadOperationResult OnExecuteStep(IBucket bucket, int workloadIndex, int docIndex, Func<TimeSpan> getTiming)
         {
             var key = DocKeyGenerator.Generate(workloadIndex, docIndex);
 
-            sw.Start();
             var storeOpResult = bucket.Upsert(key, SampleDocument);
-            sw.Stop();
 
-            return new WorkloadOperationResult(storeOpResult.Success, storeOpResult.Message, sw.Elapsed)
+            return new WorkloadOperationResult(storeOpResult.Success, storeOpResult.Message, getTiming())
             {
                 DocSize = SampleDocument.Length
             };

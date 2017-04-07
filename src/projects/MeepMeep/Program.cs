@@ -107,6 +107,7 @@ namespace MeepMeep
                         options.WorkloadSize,
                         options.WarmupMs,
                         options.MutationPercentage,
+                        options.EnableOperationTiming,
                         SampleDocuments.ReadJsonSampleDocument(options.DocSamplePath));
                     break;
                 case WorkloadType.SetOnly:
@@ -119,6 +120,7 @@ namespace MeepMeep
                         ),
                         options.WorkloadSize,
                         options.WarmupMs,
+                        options.EnableOperationTiming,
                         SampleDocuments.ReadJsonSampleDocument(options.DocSamplePath));
                     break;
                 case WorkloadType.SetAndGet:
@@ -130,7 +132,8 @@ namespace MeepMeep
                             options.DocKeyRange
                         ),
                         options.WorkloadSize,
-                        options.WarmupMs);
+                        options.WarmupMs,
+                        options.EnableOperationTiming);
                     break;
             }
         }

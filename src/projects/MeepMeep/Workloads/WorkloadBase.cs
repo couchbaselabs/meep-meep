@@ -16,10 +16,11 @@ namespace MeepMeep.Workloads
         protected readonly IWorkloadDocKeyGenerator DocKeyGenerator;
         protected readonly int WorkloadSize;
         protected readonly int WarmupMs;
+        private readonly bool _enableTiming;
 
         public abstract string Description { get; }
 
-        protected WorkloadBase(IWorkloadDocKeyGenerator docKeyGenerator, int workloadSize, int warmupMs)
+        protected WorkloadBase(IWorkloadDocKeyGenerator docKeyGenerator, int workloadSize, int warmupMs, bool enableTiming)
         {
             Ensure.That(docKeyGenerator, "docKeyGenerator").IsNotNull();
             Ensure.That(workloadSize, "workloadSize").IsGt(0);
@@ -27,6 +28,7 @@ namespace MeepMeep.Workloads
             DocKeyGenerator = docKeyGenerator;
             WorkloadSize = workloadSize;
             WarmupMs = warmupMs;
+            _enableTiming = enableTiming;
         }
 
         public virtual WorkloadResult Execute(IBucket bucket, int workloadIndex)
@@ -37,7 +39,18 @@ namespace MeepMeep.Workloads
             var opIndex = 0;
             var numOfWarmups = 0;
             var startedAt = DateTime.Now;
-            var sw = new Stopwatch();
+            Stopwatch sw = null;
+
+            Func<TimeSpan> getTiming;
+            if (_enableTiming)
+            {
+                sw = new Stopwatch();
+                getTiming = () => sw.Elapsed;
+            }
+            else
+            {
+                getTiming = () => TimeSpan.Zero;
+            }
 
             OnPreExecute(bucket);
 
@@ -54,13 +67,15 @@ namespace MeepMeep.Workloads
 
                 try
                 {
-                    sw.Reset();
-                    opResult = OnExecuteStep(bucket, workloadIndex, 0, sw);
+                    if (_enableTiming)
+                    {
+                        sw.Restart();
+                    }
+                    opResult = OnExecuteStep(bucket, workloadIndex, 0, getTiming);
                 }
                 catch (Exception ex)
                 {
-                    sw.Stop();
-                    opResult = new WorkloadOperationResult(ex, sw.Elapsed);
+                    opResult = new WorkloadOperationResult(ex, getTiming());
                 }
                 finally
                 {
@@ -98,6 +113,6 @@ namespace MeepMeep.Workloads
         /// </summary>
         protected virtual void OnPostExecute(IBucket bucket) { }
 
-        protected abstract WorkloadOperationResult OnExecuteStep(IBucket bucket, int workloadIndex, int opIndex, Stopwatch sw);
+        protected abstract WorkloadOperationResult OnExecuteStep(IBucket bucket, int workloadIndex, int opIndex, Func<TimeSpan> getTiming);
     }
 }

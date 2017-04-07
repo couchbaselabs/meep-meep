@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using Couchbase.Core;
 using MeepMeep.Docs;
 
@@ -19,8 +18,8 @@ namespace MeepMeep.Workloads
             get { return _description; }
         }
         
-        public MixedGetSetJsonDocumentWorkload(IWorkloadDocKeyGenerator docKeyGenerator, int workloadSize, int warmupMs, double mutationPercentage, string sampleDocument = null)
-            : base(docKeyGenerator, workloadSize, warmupMs)
+        public MixedGetSetJsonDocumentWorkload(IWorkloadDocKeyGenerator docKeyGenerator, int workloadSize, int warmupMs, double mutationPercentage, bool enableTiming, string sampleDocument = null)
+            : base(docKeyGenerator, workloadSize, warmupMs, enableTiming)
         {
             Randomizer = new Random();
             SampleDocument = sampleDocument ?? SampleDocuments.Default;
@@ -30,17 +29,15 @@ namespace MeepMeep.Workloads
                 SampleDocument.Length);
         }
 
-        protected override WorkloadOperationResult OnExecuteStep(IBucket bucket, int workloadIndex, int docIndex, Stopwatch sw)
+        protected override WorkloadOperationResult OnExecuteStep(IBucket bucket, int workloadIndex, int docIndex, Func<TimeSpan> getTiming)
         {
             var key = DocKeyGenerator.Generate(workloadIndex, docIndex);
 
-            sw.Start();
             var storeOpResult = Randomizer.NextDouble() <= _mutationPercentage
                 ? bucket.Upsert(key, SampleDocument)
                 : bucket.Get<string>(key);
-            sw.Stop();
 
-            return new WorkloadOperationResult(storeOpResult.Success, storeOpResult.Message, sw.Elapsed)
+            return new WorkloadOperationResult(storeOpResult.Success, storeOpResult.Message, getTiming())
             {
                 DocSize = SampleDocument.Length
             };
