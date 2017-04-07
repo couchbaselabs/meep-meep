@@ -41,6 +41,9 @@ namespace MeepMeep
         [Option("doc-key-seed", HelpText = "Used as a starting seed when generating document keys.", DefaultValue = 0)]
         public int DocKeySeed { get; set; }
 
+        [Option("doc-key-range", HelpText = "The maximum range of document IDs use above doc-key-seed.", DefaultValue = 1000)]
+        public int DocKeyRange { get; set; }
+
         [Option("clusteruser", HelpText = "Username for the cluster.", DefaultValue = "Administrator")]
         public string ClusterUsername { get; set; }
 

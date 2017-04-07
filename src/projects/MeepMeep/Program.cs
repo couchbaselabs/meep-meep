@@ -98,10 +98,11 @@ namespace MeepMeep
             {
                 case WorkloadType.MutationPercentage:
                     yield return new MixedGetSetJsonDocumentWorkload(
-                        new DefaultWorkloadDocKeyGenerator(
+                        new RangedWorkloadDocKeyGenerator(
                             options.DocKeyPrefix, 
                             MixedGetSetJsonDocumentWorkload.DefaultKeyGenerationPart,
-                            options.DocKeySeed
+                            options.DocKeySeed,
+                            options.DocKeyRange
                         ),
                         options.WorkloadSize,
                         options.WarmupMs,
@@ -110,10 +111,11 @@ namespace MeepMeep
                     break;
                 case WorkloadType.SetOnly:
                     yield return new AddJsonDocumentWorkload(
-                        new DefaultWorkloadDocKeyGenerator(
+                        new RangedWorkloadDocKeyGenerator(
                             options.DocKeyPrefix, 
                             AddJsonDocumentWorkload.DefaultKeyGenerationPart, 
-                            options.DocKeySeed
+                            options.DocKeySeed,
+                            options.DocKeyRange
                         ),
                         options.WorkloadSize,
                         options.WarmupMs,
@@ -121,10 +123,11 @@ namespace MeepMeep
                     break;
                 case WorkloadType.SetAndGet:
                     yield return new AddAndGetJsonDocumentWorkload(
-                        new DefaultWorkloadDocKeyGenerator(
+                        new RangedWorkloadDocKeyGenerator(
                             options.DocKeyPrefix,
                             AddAndGetJsonDocumentWorkload.DefaultKeyGenerationPart,
-                            options.DocKeySeed
+                            options.DocKeySeed,
+                            options.DocKeyRange
                         ),
                         options.WorkloadSize,
                         options.WarmupMs);

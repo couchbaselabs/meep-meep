@@ -18,8 +18,6 @@ namespace MeepMeep.Workloads
 
         protected readonly string SampleDocument;
 
-        protected readonly Random Randomizer;
-
         public const string DefaultKeyGenerationPart = "agjdw";
 
         public override string Description
@@ -30,7 +28,6 @@ namespace MeepMeep.Workloads
         public AddAndGetJsonDocumentWorkload(IWorkloadDocKeyGenerator docKeyGenerator, int workloadSize, int warmupMs, string sampleDocument = null)
             : base(docKeyGenerator, workloadSize, warmupMs)
         {
-            Randomizer = new Random();
             SampleDocument = sampleDocument ?? SampleDocuments.Default;
             _description = string.Format("ExecuteStore (Add) and ExecuteGet by random key, {0} times.", WorkloadSize);
         }
@@ -38,7 +35,7 @@ namespace MeepMeep.Workloads
         protected override WorkloadOperationResult OnExecuteStep(IBucket bucket, int workloadIndex, int docIndex, Stopwatch sw)
         {
             var key = DocKeyGenerator.Generate(workloadIndex, docIndex);
-            var randomKey = DocKeyGenerator.Generate(workloadIndex, GetRandomDocIndex(0, docIndex));
+            var randomKey = DocKeyGenerator.Generate(workloadIndex, docIndex);
 
             sw.Start();
             var storeOpResult = bucket.Upsert(key, SampleDocument);
@@ -69,11 +66,6 @@ namespace MeepMeep.Workloads
             return getOpResult != null && getOpResult.Value != null
                 ? getOpResult.Value.ToString().Length
                 : 0;
-        }
-
-        protected virtual int GetRandomDocIndex(int min, int max)
-        {
-            return Randomizer.Next(min, max);
         }
     }
 }

@@ -75,6 +75,7 @@
     <Compile Include="Docs\IWorkloadDocKeyGenerator.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Docs\RangedWorkloadDocKeyGenerator.cs" />
     <Compile Include="Docs\SampleDocuments.cs" />
     <Compile Include="Extensions\AssemblyExtensions.cs">
       <SubType>Code</SubType>
