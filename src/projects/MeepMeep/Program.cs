@@ -94,11 +94,18 @@ namespace MeepMeep
 
         private static IEnumerable<IWorkload> CreateWorkloads(MeepMeepOptions options)
         {
-            yield return new AddJsonDocumentWorkload(
-                new DefaultWorkloadDocKeyGenerator(options.DocKeyPrefix, AddJsonDocumentWorkload.DefaultKeyGenerationPart, options.DocKeySeed),
+            yield return new MixedGetSetJsonDocumentWorkload(
+                new DefaultWorkloadDocKeyGenerator(options.DocKeyPrefix, MixedGetSetJsonDocumentWorkload.DefaultKeyGenerationPart, options.DocKeySeed),
                 options.WorkloadSize,
                 options.WarmupMs,
+                options.MutationPercentage,
                 SampleDocuments.ReadJsonSampleDocument(options.DocSamplePath));
+
+            //yield return new AddJsonDocumentWorkload(
+            //    new DefaultWorkloadDocKeyGenerator(options.DocKeyPrefix, AddJsonDocumentWorkload.DefaultKeyGenerationPart, options.DocKeySeed),
+            //    options.WorkloadSize,
+            //    options.WarmupMs,
+            //    SampleDocuments.ReadJsonSampleDocument(options.DocSamplePath));
 
             //saakshi
             //yield return new AddAndGetJsonDocumentWorkload(

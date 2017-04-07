@@ -103,6 +103,7 @@
     <Compile Include="Workloads\AddAndGetJsonDocumentWorkload.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Workloads\MixedGetSetJsonDocumentWorkload.cs" />
     <Compile Include="Workloads\Runners\LimitedConcurrencyLevelTaskScheduler.cs">
       <SubType>Code</SubType>
     </Compile>
