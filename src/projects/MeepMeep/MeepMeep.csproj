@@ -111,6 +111,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Workloads\WorkloadBase.cs" />
+    <Compile Include="WorkloadType.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

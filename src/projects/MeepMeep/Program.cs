@@ -94,24 +94,42 @@ namespace MeepMeep
 
         private static IEnumerable<IWorkload> CreateWorkloads(MeepMeepOptions options)
         {
-            yield return new MixedGetSetJsonDocumentWorkload(
-                new DefaultWorkloadDocKeyGenerator(options.DocKeyPrefix, MixedGetSetJsonDocumentWorkload.DefaultKeyGenerationPart, options.DocKeySeed),
-                options.WorkloadSize,
-                options.WarmupMs,
-                options.MutationPercentage,
-                SampleDocuments.ReadJsonSampleDocument(options.DocSamplePath));
-
-            //yield return new AddJsonDocumentWorkload(
-            //    new DefaultWorkloadDocKeyGenerator(options.DocKeyPrefix, AddJsonDocumentWorkload.DefaultKeyGenerationPart, options.DocKeySeed),
-            //    options.WorkloadSize,
-            //    options.WarmupMs,
-            //    SampleDocuments.ReadJsonSampleDocument(options.DocSamplePath));
-
-            //saakshi
-            //yield return new AddAndGetJsonDocumentWorkload(
-            //    new DefaultWorkloadDocKeyGenerator(options.DocKeyPrefix, AddAndGetJsonDocumentWorkload.DefaultKeyGenerationPart, options.DocKeySeed),
-            //    options.WorkloadSize,
-            //    options.WarmupMs);
+            switch (options.WorkloadType)
+            {
+                case WorkloadType.MutationPercentage:
+                    yield return new MixedGetSetJsonDocumentWorkload(
+                        new DefaultWorkloadDocKeyGenerator(
+                            options.DocKeyPrefix, 
+                            MixedGetSetJsonDocumentWorkload.DefaultKeyGenerationPart,
+                            options.DocKeySeed
+                        ),
+                        options.WorkloadSize,
+                        options.WarmupMs,
+                        options.MutationPercentage,
+                        SampleDocuments.ReadJsonSampleDocument(options.DocSamplePath));
+                    break;
+                case WorkloadType.SetOnly:
+                    yield return new AddJsonDocumentWorkload(
+                        new DefaultWorkloadDocKeyGenerator(
+                            options.DocKeyPrefix, 
+                            AddJsonDocumentWorkload.DefaultKeyGenerationPart, 
+                            options.DocKeySeed
+                        ),
+                        options.WorkloadSize,
+                        options.WarmupMs,
+                        SampleDocuments.ReadJsonSampleDocument(options.DocSamplePath));
+                    break;
+                case WorkloadType.SetAndGet:
+                    yield return new AddAndGetJsonDocumentWorkload(
+                        new DefaultWorkloadDocKeyGenerator(
+                            options.DocKeyPrefix,
+                            AddAndGetJsonDocumentWorkload.DefaultKeyGenerationPart,
+                            options.DocKeySeed
+                        ),
+                        options.WorkloadSize,
+                        options.WarmupMs);
+                    break;
+            }
         }
 
         private static void OnWorkloadCompleted(WorkloadResult workloadResult)

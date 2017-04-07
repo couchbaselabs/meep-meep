@@ -65,6 +65,9 @@ namespace MeepMeep
         [Option('r', "mutation-percentage", HelpText = "The percentage of operations that should be mutations.", DefaultValue = 0.33)]
         public double MutationPercentage { get; set; }
 
+        [Option("workload-type", HelpText = "The type of workload to be used.", DefaultValue = WorkloadType.MutationPercentage)]
+        public WorkloadType WorkloadType { get; set; }
+
         [HelpOption('h', "help")]
         public string GetHelp()
         {
