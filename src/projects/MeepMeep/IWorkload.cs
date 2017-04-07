@@ -1,4 +1,4 @@
-﻿using Couchbase;
+﻿using Couchbase.Core;
 
 namespace MeepMeep
 {
@@ -16,9 +16,9 @@ namespace MeepMeep
         /// <summary>
         /// Will start execute the workload against sent client.
         /// </summary>
-        /// <param name="client"></param>
+        /// <param name="bucket"></param>
         /// <param name="workloadIndex"></param>
         /// <returns></returns>
-        WorkloadResult Execute(ICouchbaseClient client, int workloadIndex);
+        WorkloadResult Execute(IBucket bucket, int workloadIndex);
     }
 }

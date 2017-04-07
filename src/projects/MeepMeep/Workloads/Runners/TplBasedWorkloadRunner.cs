@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Couchbase;
+using Couchbase.Core;
 using EnsureThat;
 
 namespace MeepMeep.Workloads.Runners
@@ -24,14 +24,14 @@ namespace MeepMeep.Workloads.Runners
             TaskScheduler = CreateTaskScheduler(options.MaximumConcurrencyLevel);
         }
 
-        public virtual void Run(IWorkload workload, ICouchbaseClient client, Action<WorkloadResult> onWorkloadCompleted)
+        public virtual void Run(IWorkload workload, IBucket bucket, Action<WorkloadResult> onWorkloadCompleted)
         {
             Ensure.That(workload, "workload").IsNotNull();
             Ensure.That(onWorkloadCompleted, "onWorkloadCompleted").IsNotNull();
 
             try
             {
-                Task.WaitAll(StartWorkloadTasks(workload, client, onWorkloadCompleted));
+                Task.WaitAll(StartWorkloadTasks(workload, bucket, onWorkloadCompleted));
             }
             catch (Exception ex)
             {
@@ -41,7 +41,7 @@ namespace MeepMeep.Workloads.Runners
             }
         }
 
-        protected virtual Task[] StartWorkloadTasks(IWorkload workload, ICouchbaseClient client, Action<WorkloadResult> onWorkloadCompleted)
+        protected virtual Task[] StartWorkloadTasks(IWorkload workload, IBucket bucket, Action<WorkloadResult> onWorkloadCompleted)
         {
             var tasks = new Task[NumOfClients];
 
@@ -55,7 +55,7 @@ namespace MeepMeep.Workloads.Runners
 
                     Thread.CurrentThread.Name = string.Concat(workload.GetType().Name, workloadIndex);
 
-                    var result = workload.Execute(client, workloadIndex);
+                    var result = workload.Execute(bucket, workloadIndex);
 
                     onWorkloadCompleted(result);
                 }, i);

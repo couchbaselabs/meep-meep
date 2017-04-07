@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
-using Couchbase;
-using Enyim.Caching.Memcached;
+using Couchbase.Core;
 using MeepMeep.Docs;
 
 namespace MeepMeep.Workloads
@@ -30,14 +29,12 @@ namespace MeepMeep.Workloads
                 SampleDocument.Length);
         }
 
-        protected override WorkloadOperationResult OnExecuteStep(ICouchbaseClient client, int workloadIndex, int docIndex, Stopwatch sw)
+        protected override WorkloadOperationResult OnExecuteStep(IBucket bucket, int workloadIndex, int docIndex, Stopwatch sw)
         {
             var key = DocKeyGenerator.Generate(workloadIndex, docIndex);
 
             sw.Start();
-            //saakshi
-            //var storeOpResult = client.ExecuteStore(StoreMode.Add, key, SampleDocument);
-            var storeOpResult = client.ExecuteStore(StoreMode.Set, key, SampleDocument);
+            var storeOpResult = bucket.Upsert(key, SampleDocument);
             sw.Stop();
 
             return new WorkloadOperationResult(storeOpResult.Success, storeOpResult.Message, sw.Elapsed)

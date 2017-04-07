@@ -2,7 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.Threading;
-using Couchbase;
+using Couchbase.Core;
 using EnsureThat;
 using MeepMeep.Docs;
 
@@ -29,9 +29,9 @@ namespace MeepMeep.Workloads
             WarmupMs = warmupMs;
         }
 
-        public virtual WorkloadResult Execute(ICouchbaseClient client, int workloadIndex)
+        public virtual WorkloadResult Execute(IBucket bucket, int workloadIndex)
         {
-            Ensure.That(client, "client").IsNotNull();
+            Ensure.That(bucket, "bucket").IsNotNull();
 
             var workloadResult = CreateWorkloadResult();
             var opIndex = 0;
@@ -39,7 +39,7 @@ namespace MeepMeep.Workloads
             var startedAt = DateTime.Now;
             var sw = new Stopwatch();
 
-            OnPreExecute(client);
+            OnPreExecute(bucket);
 
             while (true)
             {
@@ -55,9 +55,7 @@ namespace MeepMeep.Workloads
                 try
                 {
                     sw.Reset();
-                    //saakshi
-                    //opResult = OnExecuteStep(client, workloadIndex, opIndex, sw);
-                    opResult = OnExecuteStep(client, workloadIndex, 0, sw);
+                    opResult = OnExecuteStep(bucket, workloadIndex, 0, sw);
                 }
                 catch (Exception ex)
                 {
@@ -72,7 +70,7 @@ namespace MeepMeep.Workloads
                 opIndex++;
             }
 
-            OnPostExecute(client);
+            OnPostExecute(bucket);
 
             return workloadResult;
         }
@@ -93,13 +91,13 @@ namespace MeepMeep.Workloads
         /// <summary>
         /// Not included in timing. Could be used to perform setup logic.
         /// </summary>
-        protected virtual void OnPreExecute(ICouchbaseClient client) { }
+        protected virtual void OnPreExecute(IBucket bucket) { }
 
         /// <summary>
         /// Not included in timing. Could be used to perform cleanup logic.
         /// </summary>
-        protected virtual void OnPostExecute(ICouchbaseClient client) { }
+        protected virtual void OnPostExecute(IBucket bucket) { }
 
-        protected abstract WorkloadOperationResult OnExecuteStep(ICouchbaseClient client, int workloadIndex, int opIndex, Stopwatch sw);
+        protected abstract WorkloadOperationResult OnExecuteStep(IBucket bucket, int workloadIndex, int opIndex, Stopwatch sw);
     }
 }

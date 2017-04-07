@@ -2,8 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Text;
 using Couchbase;
-using Enyim.Caching.Memcached;
-using Enyim.Caching.Memcached.Results;
+using Couchbase.Core;
 using MeepMeep.Docs;
 
 namespace MeepMeep.Workloads
@@ -36,16 +35,14 @@ namespace MeepMeep.Workloads
             _description = string.Format("ExecuteStore (Add) and ExecuteGet by random key, {0} times.", WorkloadSize);
         }
 
-        protected override WorkloadOperationResult OnExecuteStep(ICouchbaseClient client, int workloadIndex, int docIndex, Stopwatch sw)
+        protected override WorkloadOperationResult OnExecuteStep(IBucket bucket, int workloadIndex, int docIndex, Stopwatch sw)
         {
             var key = DocKeyGenerator.Generate(workloadIndex, docIndex);
             var randomKey = DocKeyGenerator.Generate(workloadIndex, GetRandomDocIndex(0, docIndex));
 
             sw.Start();
-            //saakshi
-            //var storeOpResult = client.ExecuteStore(StoreMode.Add, key, SampleDocument);
-            var storeOpResult = client.ExecuteStore(StoreMode.Set, key, SampleDocument);
-            var getOpResult = client.ExecuteGet(randomKey);
+            var storeOpResult = bucket.Upsert(key, SampleDocument);
+            var getOpResult = bucket.Get<string>(randomKey);
             sw.Stop();
 
             return new WorkloadOperationResult(storeOpResult.Success && getOpResult.Success, GetMessage(storeOpResult, getOpResult), sw.Elapsed)
@@ -54,7 +51,7 @@ namespace MeepMeep.Workloads
             };
         }
 
-        protected virtual string GetMessage(IStoreOperationResult storeOpResult, IGetOperationResult getOpResult)
+        protected virtual string GetMessage(IOperationResult storeOpResult, IOperationResult getOpResult)
         {
             var sb = new StringBuilder();
 
@@ -67,7 +64,7 @@ namespace MeepMeep.Workloads
             return sb.ToString().TrimEnd();
         }
 
-        protected virtual int GetDocSize(IGetOperationResult getOpResult)
+        protected virtual int GetDocSize(IOperationResult<string> getOpResult)
         {
             return getOpResult != null && getOpResult.Value != null
                 ? getOpResult.Value.ToString().Length

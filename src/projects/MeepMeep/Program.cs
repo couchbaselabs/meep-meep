@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Couchbase;
+using Couchbase.Authentication;
+using Couchbase.Configuration.Client;
 using MeepMeep.Docs;
-using MeepMeep.Extensions;
 using MeepMeep.Input;
 using MeepMeep.Output;
 using MeepMeep.Workloads;
 using MeepMeep.Workloads.Runners;
-using Couchbase.Management;
 
 namespace MeepMeep
 {
@@ -46,32 +47,44 @@ namespace MeepMeep
 
         private static void Run(MeepMeepOptions options)
         {
-            /* saakshi change */
-            var cluster = new CouchbaseCluster(options.ToClientConfig());
-            cluster.FlushBucket(options.Bucket);
-            /* change over */
-
             OutputWriter.Verbose = options.Verbose;
 
             OutputWriter.Write("Running with options:");
             OutputWriter.Write(options);
 
-            OutputWriter.Write("Running workloads...");
-
-            using (var client = CreateClient(options))
+            var config = new ClientConfiguration
             {
-                var runner = CreateRunner(options);
+                Servers = options.Nodes.Select(x => new Uri(x)).ToList()
+            };
 
+            using (var cluster = new Cluster(config))
+            {
+                cluster.Authenticate(new ClusterCredentials
+                {
+                    ClusterUsername = options.ClusterUsername,
+                    ClusterPassword = options.ClusterPassword,
+                    BucketCredentials = new Dictionary<string, string>
+                    {
+                        {options.Bucket, options.BucketPassword}
+                    }
+                });
+
+                OutputWriter.Write("Preparing bucket:");
+
+                var bucket = cluster.OpenBucket(options.Bucket);
+                var bucketManager = bucket.CreateManager();
+                bucketManager.Flush();
+
+                OutputWriter.Write("Running workloads...");
+
+                var runner = CreateRunner(options);
                 foreach (var workload in CreateWorkloads(options))
-                    runner.Run(workload, client, OnWorkloadCompleted);
+                {
+                    runner.Run(workload, bucket, OnWorkloadCompleted);
+                }
             }
 
             OutputWriter.Write("Completed");
-        }
-
-        private static ICouchbaseClient CreateClient(MeepMeepOptions options)
-        {
-            return new CouchbaseClient(options.ToClientConfig());
         }
 
         private static IWorkloadRunner CreateRunner(MeepMeepOptions options)
