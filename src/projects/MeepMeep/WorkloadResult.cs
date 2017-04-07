@@ -77,6 +77,32 @@ namespace MeepMeep
                 .Min(o => o.TimeTaken.TotalMilliseconds);
         }
 
+        public virtual double? GetSuccessfullOperationPercentile(double percentile)
+        {
+            if (!OperationResults.Any(o => o.Succeeded))
+            {
+                return null;
+            }
+
+            return CalculatPercentile(
+                OperationResults.Where(o => o.Succeeded).Select(o => o.TimeTaken.TotalMilliseconds),
+                percentile);
+        }
+
+        // http://stackoverflow.com/questions/8137391/percentile-calculation
+        public static double CalculatPercentile(IEnumerable<double> timings, double percentile)
+        {
+            var elements = timings.ToArray();
+            Array.Sort(elements);
+            double realIndex = percentile * (elements.Length - 1);
+            int index = (int)realIndex;
+            double frac = realIndex - index;
+            if (index + 1 < elements.Length)
+                return elements[index] * (1 - frac) + elements[index + 1] * frac;
+            else
+                return elements[index];
+        }
+
         public virtual IEnumerable<WorkloadOperationResult> GetOperationResults()
         {
             return OperationResults;
