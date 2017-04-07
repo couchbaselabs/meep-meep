@@ -115,16 +115,6 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\src\Couchbase\Couchbase.csproj">
-      <Project>{708a2350-a26c-444d-b975-8164263951a7}</Project>
-      <Name>Couchbase</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\..\src\Enyim.Caching\Enyim.Caching.csproj">
-      <Project>{eb42e369-1adf-4e08-8db7-6fa792abdcc7}</Project>
-      <Name>Enyim.Caching</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
