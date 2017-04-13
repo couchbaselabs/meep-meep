@@ -22,10 +22,10 @@ namespace MeepMeep.UnitTests.Workloads
             A.CallTo(() => Bucket.Upsert(A<string>.Ignored, A<string>.Ignored))
              .MustHaveHappened(Repeated.Exactly.Times(10));
 
-            var keys = GenerateKeys(10).ToArray();
+            var keys = GenerateKeys(1).ToArray();
             foreach (var key in keys)
                 A.CallTo(() => Bucket.Upsert(key, SampleDocuments.Default))
-                 .MustHaveHappened(Repeated.Exactly.Once);
+                 .MustHaveHappened(Repeated.Exactly.Times(10));
 
             A.CallTo(() => Bucket.Get<string>(A<string>.That.Matches(k => keys.Contains(k))))
              .MustHaveHappened(Repeated.Exactly.Times(10));

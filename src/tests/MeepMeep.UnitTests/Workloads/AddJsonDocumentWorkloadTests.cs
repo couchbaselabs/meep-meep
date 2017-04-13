@@ -21,9 +21,9 @@ namespace MeepMeep.UnitTests.Workloads
             A.CallTo(() => Bucket.Upsert(A<string>.Ignored, A<string>.Ignored))
              .MustHaveHappened(Repeated.Exactly.Times(10));
 
-            foreach (var key in GenerateKeys(10))
+            foreach (var key in GenerateKeys(1))
                 A.CallTo(() => Bucket.Upsert(key, SampleDocuments.Default))
-                 .MustHaveHappened(Repeated.Exactly.Once);
+                 .MustHaveHappened(Repeated.Exactly.Times(10));
         }
 
         [Test]
