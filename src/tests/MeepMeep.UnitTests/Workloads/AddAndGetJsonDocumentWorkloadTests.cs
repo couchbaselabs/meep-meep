@@ -19,12 +19,12 @@ namespace MeepMeep.UnitTests.Workloads
 
             SUT.Execute(Bucket, 0);
 
-            A.CallTo(() => Bucket.Insert(A<string>.Ignored, A<string>.Ignored))
+            A.CallTo(() => Bucket.Upsert(A<string>.Ignored, A<string>.Ignored))
              .MustHaveHappened(Repeated.Exactly.Times(10));
 
             var keys = GenerateKeys(10).ToArray();
             foreach (var key in keys)
-                A.CallTo(() => Bucket.Insert(key, SampleDocuments.Default))
+                A.CallTo(() => Bucket.Upsert(key, SampleDocuments.Default))
                  .MustHaveHappened(Repeated.Exactly.Once);
 
             A.CallTo(() => Bucket.Get<string>(A<string>.That.Matches(k => keys.Contains(k))))
@@ -36,7 +36,7 @@ namespace MeepMeep.UnitTests.Workloads
         {
             SUT = CreateWorkload(10);
 
-            A.CallTo(() => Bucket.Insert(A<string>.Ignored, A<string>.Ignored))
+            A.CallTo(() => Bucket.Upsert(A<string>.Ignored, A<string>.Ignored))
              .Returns(new OperationResult<string>());
 
             var workloadResult = SUT.Execute(Bucket, 0);
@@ -49,7 +49,7 @@ namespace MeepMeep.UnitTests.Workloads
         {
             SUT = CreateWorkload(10);
 
-            A.CallTo(() => Bucket.Insert(A<string>.Ignored, A<string>.Ignored))
+            A.CallTo(() => Bucket.Upsert(A<string>.Ignored, A<string>.Ignored))
              .Throws(new Exception("Foo bar"));
 
             var workloadResult = SUT.Execute(Bucket, 0);
