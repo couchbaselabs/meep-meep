@@ -9,6 +9,7 @@ using MeepMeep.Extensions;
 
 namespace MeepMeep.UnitTests
 {
+    [Ignore("Comparing expected output with local files is hard to maintain")]
     [TestFixture]
     [UseReporter(typeof(DiffReporter))]
     public class MeepMeepOptionTests : UnitTestsOf<MeepMeepOptions>
