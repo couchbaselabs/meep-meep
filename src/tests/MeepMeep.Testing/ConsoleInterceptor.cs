@@ -28,7 +28,7 @@ namespace MeepMeep.Testing
                     }
                 }
 
-                return intercepted.ToString();
+                return intercepted.ToString().Replace("\r\n", "\n");
             }
         }
     }

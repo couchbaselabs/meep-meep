@@ -1,0 +1,7 @@
+configuration: Release
+before_build:
+- ps: nuget restore .\src\MeepMeep.sln
+build:
+  publish_nuget: true
+  include_nuget_references: true
+  verbosity: minimal

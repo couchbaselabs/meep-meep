@@ -8,6 +8,7 @@ using NUnit.Framework;
 
 namespace MeepMeep.UnitTests.Output
 {
+    [Ignore("AppVeyor does not support ApprovalsTests")]
     [UseReporter(typeof(DiffReporter))]
     [TestFixture]
     public class ConsoleOutputWriterTests : UnitTestsOf<ConsoleOutputWriter>

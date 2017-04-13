@@ -9,6 +9,7 @@ using MeepMeep.Extensions;
 
 namespace MeepMeep.UnitTests
 {
+    [Ignore("AppVeyor does not support ApprovalsTests")]
     [TestFixture]
     [UseReporter(typeof(DiffReporter))]
     public class MeepMeepOptionTests : UnitTestsOf<MeepMeepOptions>
@@ -45,18 +46,6 @@ namespace MeepMeep.UnitTests
         public void When_evaluating_options_as_string_It_should_output_key_values_of_the_options()
         {
             Approvals.Verify(SUT);
-        }
-
-        [Test]
-        public void Can_map_to_couchbase_config()
-        {
-            var clientConfig = SUT.ToClientConfig();
-
-            clientConfig.Bucket.Should().Be(SUT.Bucket);
-            clientConfig.BucketPassword.Should().Be(SUT.BucketPassword);
-            clientConfig.Username.Should().Be(SUT.ClusterUsername);
-            clientConfig.Password.Should().Be(SUT.ClusterPassword);
-            clientConfig.Urls.Should().BeEquivalentTo(SUT.Nodes.Select(n => new Uri(n)));
         }
     }
 }
