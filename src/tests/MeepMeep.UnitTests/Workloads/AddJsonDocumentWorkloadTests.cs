@@ -1,6 +1,5 @@
 ﻿using System;
-using Enyim.Caching.Memcached;
-using Enyim.Caching.Memcached.Results;
+using Couchbase;
 using FakeItEasy;
 using FluentAssertions;
 using MeepMeep.Docs;
@@ -17,13 +16,13 @@ namespace MeepMeep.UnitTests.Workloads
         {
             SUT = CreateWorkload(numOfDocs: 10, warmupMs: 0);
 
-            SUT.Execute(FakeClient, 0);
+            SUT.Execute(Bucket, 0);
 
-            A.CallTo(() => FakeClient.ExecuteStore(StoreMode.Add, A<string>.Ignored, A<string>.Ignored))
+            A.CallTo(() => Bucket.Insert(A<string>.Ignored, A<string>.Ignored))
              .MustHaveHappened(Repeated.Exactly.Times(10));
 
             foreach (var key in GenerateKeys(10))
-                A.CallTo(() => FakeClient.ExecuteStore(StoreMode.Add, key, SampleDocuments.Default))
+                A.CallTo(() => Bucket.Insert(key, SampleDocuments.Default))
                  .MustHaveHappened(Repeated.Exactly.Once);
         }
 
@@ -32,10 +31,10 @@ namespace MeepMeep.UnitTests.Workloads
         {
             SUT = CreateWorkload(numOfDocs: 10, warmupMs: 0);
 
-            A.CallTo(() => FakeClient.ExecuteStore(StoreMode.Add, A<string>.Ignored, A<string>.Ignored))
-             .Returns(new StoreOperationResult());
+            A.CallTo(() => Bucket.Insert(A<string>.Ignored, A<string>.Ignored))
+             .Returns(new OperationResult<string>());
 
-            var workloadResult = SUT.Execute(FakeClient, 0);
+            var workloadResult = SUT.Execute(Bucket, 0);
 
             workloadResult.CountOperations().Should().Be(10);
         }
@@ -45,17 +44,17 @@ namespace MeepMeep.UnitTests.Workloads
         {
             SUT = CreateWorkload(numOfDocs: 10, warmupMs: 0);
 
-            A.CallTo(() => FakeClient.ExecuteStore(StoreMode.Add, A<string>.Ignored, A<string>.Ignored))
+            A.CallTo(() => Bucket.Insert(A<string>.Ignored, A<string>.Ignored))
              .Throws(new Exception("Foo bar"));
 
-            var workloadResult = SUT.Execute(FakeClient, 0);
+            var workloadResult = SUT.Execute(Bucket, 0);
 
             workloadResult.CountFailedOperations().Should().Be(10);
         }
 
         protected virtual AddJsonDocumentWorkload CreateWorkload(int numOfDocs, int warmupMs)
         {
-            return new AddJsonDocumentWorkload(GetKeyGenerator(), numOfDocs, warmupMs);
+            return new AddJsonDocumentWorkload(GetKeyGenerator(), numOfDocs, warmupMs, false);
         }
 
         protected override IWorkloadDocKeyGenerator GetKeyGenerator()

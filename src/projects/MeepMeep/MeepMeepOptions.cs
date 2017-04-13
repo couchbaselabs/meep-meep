@@ -44,19 +44,19 @@ namespace MeepMeep
         [Option("doc-key-range", HelpText = "The maximum range of document IDs use above doc-key-seed.", DefaultValue = 1000)]
         public int DocKeyRange { get; set; }
 
-        [Option("clusteruser", HelpText = "Username for the cluster.", DefaultValue = "Administrator")]
+        [Option("clusteruser", HelpText = "Username for the cluster.", DefaultValue = "")]
         public string ClusterUsername { get; set; }
 
-        [Option("clusterpassword", HelpText = "Password for the cluster.", DefaultValue = "password")]
+        [Option("clusterpassword", HelpText = "Password for the cluster.", DefaultValue = "")]
         public string ClusterPassword { get; set; }
 
-        [Option("max-concurrency-level", HelpText = "Will control the maximum concurrency level used to control how many client tasks that will be executed in parallel.", DefaultValue = 100)]
+        [Option("max-concurrency-level", HelpText = "Will control the maximum concurrency level used to control how many client tasks that will be executed in parallel.", DefaultValue = null)]
         public int? MaximumConcurrencyLevel { get; set; }
 
-        [Option("threadpool-min", HelpText = "Min number of threads to be set on the underlying shared threadpool.", DefaultValue = 2000)]
+        [Option("threadpool-min", HelpText = "Min number of threads to be set on the underlying shared threadpool.", DefaultValue = null)]
         public int? ThreadPoolMinNumOfThreads { get; set; }
 
-        [Option("threadpool-max", HelpText = "Max number of threads to be set on the underlying shared threadpool.", DefaultValue = 4000)]
+        [Option("threadpool-max", HelpText = "Max number of threads to be set on the underlying shared threadpool.", DefaultValue = null)]
         public int? ThreadPoolMaxNumOfThreads { get; set; }
 
         [Option('w', "warmup-ms", HelpText = "Determines how long time (ms) it takes before a work load's operation results is being seen as part of the workload.", DefaultValue = 100)]

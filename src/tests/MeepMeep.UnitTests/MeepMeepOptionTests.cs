@@ -46,17 +46,5 @@ namespace MeepMeep.UnitTests
         {
             Approvals.Verify(SUT);
         }
-
-        [Test]
-        public void Can_map_to_couchbase_config()
-        {
-            var clientConfig = SUT.ToClientConfig();
-
-            clientConfig.Bucket.Should().Be(SUT.Bucket);
-            clientConfig.BucketPassword.Should().Be(SUT.BucketPassword);
-            clientConfig.Username.Should().Be(SUT.ClusterUsername);
-            clientConfig.Password.Should().Be(SUT.ClusterPassword);
-            clientConfig.Urls.Should().BeEquivalentTo(SUT.Nodes.Select(n => new Uri(n)));
-        }
     }
 }

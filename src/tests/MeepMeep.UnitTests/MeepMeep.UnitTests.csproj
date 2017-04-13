@@ -9,10 +9,11 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MeepMeep.UnitTests</RootNamespace>
     <AssemblyName>MeepMeep.UnitTests</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -22,6 +23,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,6 +32,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ApprovalTests, Version=3.0.0.0, Culture=neutral, PublicKeyToken=11bd7d124fc62e0f, processorArchitecture=MSIL">
@@ -40,11 +43,27 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\ApprovalUtilities.3.0.01\lib\net35\ApprovalUtilities.dll</HintPath>
     </Reference>
+    <Reference Include="Common.Logging, Version=3.3.1.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Common.Logging.3.3.1\lib\net40\Common.Logging.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Common.Logging.Core, Version=3.3.1.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Common.Logging.Core.3.3.1\lib\net40\Common.Logging.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Couchbase.NetClient, Version=2.4.2.0, Culture=neutral, PublicKeyToken=05e9c6b5a9ec94c2, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\CouchbaseNetClient.2.4.2\lib\net45\Couchbase.NetClient.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="FakeItEasy">
       <HintPath>..\..\packages\FakeItEasy.1.13.0\lib\net40\FakeItEasy.dll</HintPath>
     </Reference>
     <Reference Include="FluentAssertions">
       <HintPath>..\..\packages\FluentAssertions.2.0.1\lib\net40\FluentAssertions.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
@@ -73,14 +92,14 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\src\Couchbase\Couchbase.csproj">
-      <Project>{708a2350-a26c-444d-b975-8164263951a7}</Project>
-      <Name>Couchbase</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\..\src\Enyim.Caching\Enyim.Caching.csproj">
-      <Project>{eb42e369-1adf-4e08-8db7-6fa792abdcc7}</Project>
-      <Name>Enyim.Caching</Name>
-    </ProjectReference>
+    <Content Include="MeepMeepOptionTests.When_evaluating_options_as_string_It_should_output_key_values_of_the_options.approved.txt" />
+    <Content Include="MeepMeepOptionTests.When_generating_help_text_It_should_return_a_proper_help_screen.approved.txt" />
+    <Content Include="Output\ConsoleOutputWriterTests.Can_write_aggregate_exception_with_inner_exceptions.approved.txt" />
+    <Content Include="Output\ConsoleOutputWriterTests.Can_write_aggregate_exception_with_no_inner_exceptions.approved.txt" />
+    <Content Include="Output\ConsoleOutputWriterTests.Can_write_exception.approved.txt" />
+    <Content Include="Output\ConsoleOutputWriterTests.Can_write_workload_result.approved.txt" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\..\projects\MeepMeep\MeepMeep.csproj">
       <Project>{7725e4db-a646-48fd-a743-8d833a6f2786}</Project>
       <Name>MeepMeep</Name>
@@ -89,14 +108,6 @@
       <Project>{b62b928e-9c91-419f-b6b4-f6150b51ef47}</Project>
       <Name>MeepMeep.Testing</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="MeepMeepOptionTests.When_evaluating_options_as_string_It_should_output_key_values_of_the_options.approved.txt" />
-    <Content Include="MeepMeepOptionTests.When_generating_help_text_It_should_return_a_proper_help_screen.approved.txt" />
-    <Content Include="Output\ConsoleOutputWriterTests.Can_write_aggregate_exception_with_inner_exceptions.approved.txt" />
-    <Content Include="Output\ConsoleOutputWriterTests.Can_write_aggregate_exception_with_no_inner_exceptions.approved.txt" />
-    <Content Include="Output\ConsoleOutputWriterTests.Can_write_exception.approved.txt" />
-    <Content Include="Output\ConsoleOutputWriterTests.Can_write_workload_result.approved.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
