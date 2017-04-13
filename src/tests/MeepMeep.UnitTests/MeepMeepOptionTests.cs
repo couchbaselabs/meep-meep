@@ -9,7 +9,7 @@ using MeepMeep.Extensions;
 
 namespace MeepMeep.UnitTests
 {
-    [Ignore("Comparing expected output with local files is hard to maintain")]
+    [Ignore("AppVeyor does not support ApprovalsTests")]
     [TestFixture]
     [UseReporter(typeof(DiffReporter))]
     public class MeepMeepOptionTests : UnitTestsOf<MeepMeepOptions>
