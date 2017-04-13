@@ -5,4 +5,3 @@ build:
   publish_nuget: true
   include_nuget_references: true
   verbosity: minimal
-test: off
