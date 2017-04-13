@@ -1,0 +1,7 @@
+configuration: Release
+build:
+  project: src\projects\MeepMeep\MeepMeep.csproj
+  publish_nuget: true
+  include_nuget_references: true
+  verbosity: minimal
+test: off
