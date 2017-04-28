@@ -1,4 +1,3 @@
-using System.Runtime.InteropServices;
 ﻿using System.Reflection;
 
 #if DEBUG
@@ -9,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("Release")]
 #endif
 
-[assembly: AssemblyDescription("MeepMeep - A super simple workload utility for the Couchbase .Net client.")]
-[assembly: AssemblyCompany("Daniel Wertheim")]
-[assembly: AssemblyCopyright("Copyright © 2013 Daniel Wertheim")]
+[assembly: AssemblyDescription("MeepMeep - A super simple workload utility for the Couchbase .NET client.")]
+[assembly: AssemblyCompany("Couchbase")]
+[assembly: AssemblyCopyright("Copyright © 2017 Couchbase")]
 [assembly: AssemblyTrademark("")]
 
 [assembly: AssemblyVersion("0.1.0.*")]
