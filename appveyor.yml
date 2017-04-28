@@ -1,7 +1,35 @@
+version: 0.1.0.{build}
 configuration: Release
+init:
+- ps: if ($env:APPVEYOR_REPO_TAG -eq "true") { Update-AppveyorBuild -Version "$env:APPVEYOR_REPO_TAG_NAME".TrimStart("v") }
+assembly_info:
+  patch: true
+  file: '**\AssemblyInfo.*'
+  assembly_version: '%APPVEYOR_BUILD_VERSION%'
+  assembly_file_version: '%APPVEYOR_BUILD_VERSION%'
+  assembly_informational_version: '%APPVEYOR_BUILD_VERSION%'
+cache:
+- src\packages -> **\packages.config
 before_build:
 - ps: nuget restore .\src\MeepMeep.sln
 build:
   publish_nuget: true
   include_nuget_references: true
   verbosity: minimal
+deploy:
+- provider: NuGet
+  server: https://www.myget.org/F/meep-meep/api/v2/package
+  api_key:
+    secure: Cov0c7H0EvTAcF+4heoatFrtbFVvnz9PR0bTNbDKVTjcN47Vy1k2C3Siep6NsdA7
+  skip_symbols: true
+  artifact: /.*\.nupkg/
+  on:
+    appveyor_repo_tag: false
+- provider: NuGet
+  server: https://www.nuget.org/api/v2/package
+  api_key:
+    secure: RR63qaRziTfBDzeAHNLX/nNGavXrfzgXnSRniyuFgK493SzEw8DUa89bgVZHYSg8
+  skip_symbols: true
+  artifact: /.*\.nupkg/
+  on:
+    appveyor_repo_tag: true
