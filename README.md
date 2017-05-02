@@ -59,7 +59,7 @@ The options are:
     --workload-type            (Default: MutationPercentage) The type of workload
                                to be used.
 
-    -t, --enable-timings       (Default: false) Time operations and output at end
+    -t, --enable-timings       (Default: true) Time operations and output at end
                                of workload.
 
     -h, --help                 Display this help screen.

@@ -71,7 +71,7 @@ namespace MeepMeep
         [Option("workload-type", HelpText = "The type of workload to be used.", DefaultValue = WorkloadType.MutationPercentage)]
         public WorkloadType WorkloadType { get; set; }
 
-        [Option('t', "enable-timings", HelpText = "Time operations and output at end of workload.", DefaultValue = false)]
+        [Option('t', "enable-timings", HelpText = "Time operations and output at end of workload.", DefaultValue = true)]
         public bool EnableOperationTiming { get; set; }
 
         [HelpOption('h', "help")]
