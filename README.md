@@ -1,7 +1,8 @@
-# MeepMeep #
+# MeepMeep [![Build status](https://ci.appveyor.com/api/projects/status/yxxv2cmrgdocbr9j/branch/master?svg=true)](https://ci.appveyor.com/project/Couchbase/meep-meep/branch/master)
+
 MeepMeep is a simple sample of a workload console app that can be used to simulate workloads against a Couchbase cluster using the .Net client.
 
-# Usage #
+# Usage
 MeepMeep is a simple console application. Run it with the switch `-h` or `--help` to get presented by the existing switches.
 
 Please note that the three `workloads` currently shipped with MeepMeep: `MutationPercentage`, `AddJsonDocumentWorkload` and  `AddAndGetJsonDocumentWorkload`.
