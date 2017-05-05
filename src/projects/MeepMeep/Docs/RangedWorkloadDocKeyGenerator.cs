@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using EnsureThat;
 
 namespace MeepMeep.Docs
 {
     public class RangedWorkloadDocKeyGenerator : IWorkloadDocKeyGenerator
     {
+        private const string Seperator = ":";
         private static readonly Random Random = new Random();
 
         protected readonly string DocKeyPrefix;
@@ -27,8 +30,14 @@ namespace MeepMeep.Docs
 
         public virtual string Generate(int workloadIndex, int docIndex)
         {
-            const string seperator = ":";
-            return string.Join(seperator, DocKeyPrefix, WorkloadKey, workloadIndex, Random.Next(DocKeySeed, DocKeyRange));
+            return string.Join(Seperator, DocKeyPrefix, WorkloadKey, workloadIndex, Random.Next(DocKeySeed, DocKeyRange));
+        }
+
+        public IEnumerable<string> GenerateAllKeys(int workloadIndex, int docIndex)
+        {
+            return Enumerable
+                .Range(DocKeySeed, DocKeyRange)
+                .Select(x => string.Join(Seperator, DocKeyPrefix, WorkloadKey, workloadIndex, x));
         }
     }
 }

@@ -1,9 +1,11 @@
-﻿using EnsureThat;
+﻿using System.Collections.Generic;
+using EnsureThat;
 
 namespace MeepMeep.Docs
 {
     public class DefaultWorkloadDocKeyGenerator : IWorkloadDocKeyGenerator
     {
+        private const string Seperator = ":";
         protected readonly string DocKeyPrefix;
         protected readonly string WorkloadKey;
         protected readonly int DocKeySeed;
@@ -21,7 +23,12 @@ namespace MeepMeep.Docs
 
         public virtual string Generate(int workloadIndex, int docIndex)
         {
-            return string.Concat(DocKeyPrefix, ":", WorkloadKey, ":", workloadIndex, ":", DocKeySeed + docIndex + 1);
+            return string.Join(Seperator, DocKeyPrefix, WorkloadKey, workloadIndex, DocKeySeed + docIndex + 1);
+        }
+
+        public IEnumerable<string> GenerateAllKeys(int workloadIndex, int docIndex)
+        {
+            return new[] {Generate(workloadIndex, docIndex)};
         }
     }
 }

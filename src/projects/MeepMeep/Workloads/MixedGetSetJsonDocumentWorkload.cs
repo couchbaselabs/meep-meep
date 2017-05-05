@@ -42,5 +42,19 @@ namespace MeepMeep.Workloads
                 DocSize = SampleDocument.Length
             };
         }
+
+        /// <summary>
+        /// Not included in timing. Could be used to perform setup logic.
+        /// </summary>
+        /// <param name="bucket"></param>
+        /// <param name="workloadIndex"></param>
+        /// <param name="docIndex"></param>
+        protected override void OnPreExecute(IBucket bucket, int workloadIndex, int docIndex)
+        {
+            foreach (var key in DocKeyGenerator.GenerateAllKeys(workloadIndex, docIndex))
+            {
+                bucket.Upsert(key, SampleDocument);
+            }
+        }
     }
 }

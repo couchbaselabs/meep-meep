@@ -52,7 +52,7 @@ namespace MeepMeep.Workloads
                 getTiming = () => TimeSpan.Zero;
             }
 
-            OnPreExecute(bucket);
+            OnPreExecute(bucket, workloadIndex, 0);
 
             while (true)
             {
@@ -106,7 +106,7 @@ namespace MeepMeep.Workloads
         /// <summary>
         /// Not included in timing. Could be used to perform setup logic.
         /// </summary>
-        protected virtual void OnPreExecute(IBucket bucket) { }
+        protected virtual void OnPreExecute(IBucket bucket, int workloadInex, int opIndex) { }
 
         /// <summary>
         /// Not included in timing. Could be used to perform cleanup logic.
