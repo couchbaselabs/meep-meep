@@ -116,5 +116,10 @@ namespace MeepMeep
                 .Select(g => new {Message = g.Key, Count = g.Count()})
                 .ToDictionary(i => i.Message, i => i.Count);
         }
+
+        public virtual double AverageOperationsPerSecond()
+        {
+            return Math.Round(OperationResults.Count / TimeTaken.TotalSeconds);
+        }
     }
 }
