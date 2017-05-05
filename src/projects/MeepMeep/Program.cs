@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using Couchbase;
 using Couchbase.Authentication;
 using Couchbase.Configuration.Client;
@@ -21,9 +22,27 @@ namespace MeepMeep
             try
             {
                 var options = ParseCommandLine(args);
+                if (options == null)
+                {
+                    OutputWriter.Write("Error parsing command line arguments");
+                    return;
+                }
 
-                if (options != null)
+                try
+                {
                     Run(options);
+                }
+                catch (AggregateException ex)
+                {
+                    if (ex.InnerExceptions.OfType<HttpRequestException>().Any())
+                    {
+                        OutputWriter.Write("Error connecting to cluster, please verify the nodes parameter is correct");
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
             }
             catch (Exception ex)
             {
