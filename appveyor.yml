@@ -7,7 +7,7 @@ cache:
 - '%LocalAppData%\NuGet\Cache'
 - '%LocalAppData%\NuGet\v3-cache'
 before_build:
-- ps: appveyor-retry dotnet restore -v Minimal
+- ps: appveyor-retry dotnet restore src\MeepMeep.sln -v Minimal
 build:
   publish_nuget: true
   publish_nuget_symbols: true
