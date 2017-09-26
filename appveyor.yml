@@ -1,21 +1,10 @@
-version: 0.1.0.{build}
-configuration: Release
-init:
-- ps: if ($env:APPVEYOR_REPO_TAG -eq "true") { Update-AppveyorBuild -Version "$env:APPVEYOR_REPO_TAG_NAME".TrimStart("v") }
-assembly_info:
-  patch: true
-  file: '**\AssemblyInfo.*'
-  assembly_version: '%APPVEYOR_BUILD_VERSION%'
-  assembly_file_version: '%APPVEYOR_BUILD_VERSION%'
-  assembly_informational_version: '%APPVEYOR_BUILD_VERSION%'
-cache:
-- src\packages -> **\packages.config
-before_build:
-- ps: nuget restore .\src\MeepMeep.sln
-build:
-  publish_nuget: true
-  include_nuget_references: true
-  verbosity: minimal
+version: 1.0.{build}
+image: Visual Studio 2017
+skip_branch_with_pr: true
+build_script:
+- ps: msbuild src\MeepMeep.sln /t:Restore,Pack /p:Configuration=Release /p:version=$env:APPVEYOR_BUILD_VERSION /p:PackageOutputPath=..\..\..\ /p:IncludeSymbols=true /p:IncludeSource=true /v:minimal
+artifacts:
+- path: '*.nupkg'
 deploy:
 - provider: NuGet
   server: https://www.myget.org/F/meep-meep/api/v2/package

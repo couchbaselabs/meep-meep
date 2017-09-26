@@ -14,7 +14,7 @@ namespace MeepMeep.Testing
     [TestFixture]
     public abstract class TestsOf
     {
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void FixtureInitializer()
         {
             OnFixtureInitialize();
@@ -24,7 +24,7 @@ namespace MeepMeep.Testing
         {
         }
 
-        [TestFixtureTearDown]
+        [OneTimeTearDown]
         public void FixtureFinalizer()
         {
             OnFixtureFinalize();
