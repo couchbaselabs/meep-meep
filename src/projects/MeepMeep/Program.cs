@@ -73,7 +73,12 @@ namespace MeepMeep
 
             var config = new ClientConfiguration
             {
-                Servers = options.Nodes.Select(x => new Uri(x)).ToList()
+                Servers = options.Nodes.Select(x => new Uri(x)).ToList(),
+                PoolConfiguration = new PoolConfiguration
+                {
+                    MinSize = 1,
+                    MaxSize = 1
+                }
             };
 
             using (var cluster = new Cluster(config))
