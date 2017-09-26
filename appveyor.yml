@@ -1,9 +1,12 @@
 version: 1.0.{build}
 image: Visual Studio 2017
-configuration: Release
 skip_branch_with_pr: true
 build_script:
 - ps: msbuild src\MeepMeep.sln /t:Restore,Pack /p:Configuration=Release /p:version=$env:APPVEYOR_BUILD_VERSION /p:PackageOutputPath=..\..\..\ /p:IncludeSymbols=true /p:IncludeSource=true /v:minimal
+test:
+  assemblies:
+    only:
+      - MeepMeep.UnitTests.dll
 artifacts:
 - path: '*.nupkg'
 deploy:
