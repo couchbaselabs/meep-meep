@@ -1,5 +1,5 @@
 image: Visual Studio 2017
-version: 0.2.0.{build}
+version: 1.0.0.{build}
 configuration: Release
 skip_branch_with_pr: true
 cache:
@@ -12,8 +12,6 @@ build:
   publish_nuget: true
   publish_nuget_symbols: true
   verbosity: minimal
-test_script:
-- ps: dotnet test "src\tests\MeepMeep.UnitTests"
 deploy:
 - provider: NuGet
   server: https://www.myget.org/F/meep-meep/api/v2/package
