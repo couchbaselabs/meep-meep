@@ -9,7 +9,7 @@ cache:
 build_script:
 - ps: .\build-utils\Build.ps1
 test_script:
-- ps: dotnet test "src\projects\tests\MeepMeep.UnitTests"
+- ps: dotnet test "src\tests\MeepMeep.UnitTests"
 artifacts:
 - path: '**\*.nupkg'
 deploy:
