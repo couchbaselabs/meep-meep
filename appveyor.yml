@@ -8,6 +8,10 @@ cache:
 - '%LocalAppData%\NuGet\v3-cache'
 build_script:
 - ps: .\build-utils\Build.ps1
+test_script:
+- ps: dotnet test "src\projects\tests\MeepMeep.UnitTests"
+artifacts:
+- path: '**\*.nupkg'
 deploy:
 - provider: NuGet
   server: https://www.myget.org/F/meep-meep/api/v2/package
