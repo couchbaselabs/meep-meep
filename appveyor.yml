@@ -1,18 +1,13 @@
 image: Visual Studio 2017
 version: 0.2.0.{build}
 configuration: Release
-nuget:
-  disable_publish_on_pr: true
+skip_branch_with_pr: true
 cache:
 - src\packages -> **\packages.config
 - '%LocalAppData%\NuGet\Cache'
 - '%LocalAppData%\NuGet\v3-cache'
-before_build:
-- cmd: appveyor-retry dotnet restore -v Minimal
-build:
-  publish_nuget: true
-  publish_nuget_symbols: true
-  verbosity: minimal
+build_script:
+- ps: .\build-utils\Build.ps1
 deploy:
 - provider: NuGet
   server: https://www.myget.org/F/meep-meep/api/v2/package
