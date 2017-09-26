@@ -8,6 +8,8 @@ test:
   assemblies:
     only:
       - MeepMeep.UnitTests.dll
+artifacts:
+- path: '*.nupkg'
 deploy:
 - provider: NuGet
   server: https://www.myget.org/F/meep-meep/api/v2/package
