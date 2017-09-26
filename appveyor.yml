@@ -6,8 +6,12 @@ cache:
 - src\packages -> **\packages.config
 - '%LocalAppData%\NuGet\Cache'
 - '%LocalAppData%\NuGet\v3-cache'
-build_script:
-- ps: .\build-utils\Build.ps1
+before_build:
+- ps: appveyor-retry dotnet restore -v Minimal
+build:
+  publish_nuget: true
+  publish_nuget_symbols: true
+  verbosity: minimal
 test_script:
 - ps: dotnet test "src\tests\MeepMeep.UnitTests"
 artifacts:
