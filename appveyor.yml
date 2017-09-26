@@ -1,12 +1,16 @@
 image: Visual Studio 2017
 version: 0.2.0.{build}
 configuration: Release
+nuget:
+  disable_publish_on_pr: true
 cache:
 - src\packages -> **\packages.config
 - '%LocalAppData%\NuGet\Cache'
 - '%LocalAppData%\NuGet\v3-cache'
-build_script:
-- ps: .\build-utils\Build.ps1
+build:
+  publish_nuget: true
+  publish_nuget_symbols: true
+  verbosity: minimal
 deploy:
 - provider: NuGet
   server: https://www.myget.org/F/meep-meep/api/v2/package
