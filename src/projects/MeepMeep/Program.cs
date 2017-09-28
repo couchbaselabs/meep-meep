@@ -5,6 +5,7 @@ using System.Net.Http;
 using Couchbase;
 using Couchbase.Authentication;
 using Couchbase.Configuration.Client;
+using Couchbase.Core.Transcoders;
 using MeepMeep.Docs;
 using MeepMeep.Input;
 using MeepMeep.Output;
@@ -78,7 +79,8 @@ namespace MeepMeep
                 {
                     MinSize = 1,
                     MaxSize = 1
-                }
+                },
+                Transcoder = () => options.UseJson ? new DefaultTranscoder() : new BinaryTranscoder()
             };
 
             using (var cluster = new Cluster(config))

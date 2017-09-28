@@ -38,6 +38,7 @@ namespace MeepMeep.UnitTests.Input
             options.MutationPercentage.Should().Be(0.33);
             options.WorkloadType.Should().Be(WorkloadType.MutationPercentage);
             options.EnableOperationTiming.Should().Be(true);
+            options.UseJson.Should().BeFalse();
         }
     }
 }

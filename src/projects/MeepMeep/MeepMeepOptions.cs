@@ -74,6 +74,9 @@ namespace MeepMeep
         [Option('t', "enable-timings", HelpText = "Time operations and output at end of workload.", DefaultValue = true)]
         public bool EnableOperationTiming { get; set; }
 
+        [Option("use-json", HelpText = "Enable writing JSON values instead of raw bytes.", DefaultValue = false)]
+        public bool UseJson { get; set; }
+
         [HelpOption('h', "help")]
         public string GetHelp()
         {
