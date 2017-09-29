@@ -72,19 +72,22 @@ namespace MeepMeep.Output
             {
                 Console.WriteLine();
                 Console.WriteLine("[Completed workload: {0}]", workloadResult.Description);
-                Console.WriteLine("{0}[Thread: {1}]", Indent, workloadResult.ThreadName);
                 Console.WriteLine("{0}[Workload size: {1}]", Indent, workloadResult.WorkloadSize);
-                Console.WriteLine("{0}[Total docsize:{1}]", Indent, workloadResult.GetTotalDocSize());
-                Console.WriteLine("{0}[Total time (ms):{1}]", Indent, workloadResult.TimeTaken.TotalMilliseconds);
-                Console.WriteLine("{0}[Total operations:{1}]", Indent, workloadResult.CountOperations());
-                Console.WriteLine("{0}[Failed operations:{1}]", Indent, workloadResult.CountFailedOperations());
-                Console.WriteLine("{0}[Avg operation time (ms):{1}]", Indent, workloadResult.GetAverageOperationMs());
-                Console.WriteLine("{0}[Avg operations per/second:{1}]", Indent, workloadResult.CountOperations() / workloadResult.TimeTaken.Seconds);
-                Console.WriteLine("{0}[Min successful operation time (ms):{1}]", Indent, workloadResult.GetSuccessfulOperationMinDurationMs());
-                Console.WriteLine("{0}[Max successful operation time (ms):{1}]", Indent, workloadResult.GetSuccessfulOperationMaxDurationMs());
-                Console.WriteLine("{0}[95th percentile operation time (ms):{1}]", Indent, workloadResult.GetSuccessfullOperationPercentile(0.95));
-                Console.WriteLine("{0}[98th percentile operation time (ms):{1}]", Indent, workloadResult.GetSuccessfullOperationPercentile(0.98));
-                Console.WriteLine("{0}[99th percentile operation time (ms):{1}]", Indent, workloadResult.GetSuccessfullOperationPercentile(0.99));
+                Console.WriteLine("{0}[Total docsize: {1}]", Indent, workloadResult.GetTotalDocSize());
+                Console.WriteLine("{0}[Total operations: {1}]", Indent, workloadResult.CountOperations());
+                Console.WriteLine("{0}[Failed operations: {1}]", Indent, workloadResult.CountFailedOperations());
+                Console.WriteLine("{0}[Total time (ms): {1}]", Indent, workloadResult.TimeTaken.TotalMilliseconds);
+                Console.WriteLine("{0}[Avg operations per/second: {1}]", Indent, Math.Round(workloadResult.CountOperations() / workloadResult.TimeTaken.TotalSeconds));
+                
+                if (workloadResult.HasPerOperationTimings())
+                {
+                    Console.WriteLine("{0}[Avg operation time (ms): {1}]", Indent, workloadResult.GetAverageOperationMs());
+                    Console.WriteLine("{0}[Min successful operation time (ms): {1}]", Indent, workloadResult.GetSuccessfulOperationMinDurationMs());
+                    Console.WriteLine("{0}[Max successful operation time (ms): {1}]", Indent, workloadResult.GetSuccessfulOperationMaxDurationMs());
+                    Console.WriteLine("{0}[95th percentile operation time (ms): {1}]", Indent, workloadResult.GetSuccessfullOperationPercentile(0.95));
+                    Console.WriteLine("{0}[98th percentile operation time (ms): {1}]", Indent, workloadResult.GetSuccessfullOperationPercentile(0.98));
+                    Console.WriteLine("{0}[99th percentile operation time (ms): {1}]", Indent, workloadResult.GetSuccessfullOperationPercentile(0.99));
+                }
             });
         }
 
