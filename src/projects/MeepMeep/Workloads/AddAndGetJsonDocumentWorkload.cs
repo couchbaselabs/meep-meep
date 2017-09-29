@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using System.Threading.Tasks;
 using Couchbase;
 using Couchbase.Core;
 using MeepMeep.Docs;
@@ -13,35 +14,31 @@ namespace MeepMeep.Workloads
     /// </summary>
     public class AddAndGetJsonDocumentWorkload : WorkloadBase
     {
-        private readonly string _description;
-
         protected readonly string SampleDocument;
 
         public const string DefaultKeyGenerationPart = "agjdw";
 
-        public override string Description
-        {
-            get { return _description; }
-        }
+        public override string Description { get; }
 
         public AddAndGetJsonDocumentWorkload(IWorkloadDocKeyGenerator docKeyGenerator, int workloadSize, int warmupMs, bool enableTiming, string sampleDocument = null)
             : base(docKeyGenerator, workloadSize, warmupMs, enableTiming)
         {
             SampleDocument = sampleDocument ?? SampleDocuments.Default;
-            _description = string.Format("ExecuteStore (Add) and ExecuteGet by random key, {0} times.", WorkloadSize);
+            Description = string.Format("ExecuteStore (Add) and ExecuteGet by random key, {0} times.", WorkloadSize);
         }
 
-        protected override WorkloadOperationResult OnExecuteStep(IBucket bucket, int workloadIndex, int docIndex, Func<TimeSpan> getTiming)
+        protected override async Task<WorkloadOperationResult> OnExecuteStep(IBucket bucket, int workloadIndex, int docIndex, Func<TimeSpan> getTiming)
         {
             var key = DocKeyGenerator.Generate(workloadIndex, docIndex);
             var randomKey = DocKeyGenerator.Generate(workloadIndex, docIndex);
 
-            var storeOpResult = bucket.Upsert(key, SampleDocument);
-            var getOpResult = bucket.Get<string>(randomKey);
+            var results = await Task.WhenAll(
+                bucket.UpsertAsync(key, SampleDocument), bucket.GetAsync<string>(randomKey)
+            );
 
-            return new WorkloadOperationResult(storeOpResult.Success && getOpResult.Success, GetMessage(storeOpResult, getOpResult), getTiming())
+            return new WorkloadOperationResult(results[0].Success && results[1].Success, GetMessage(results[0], results[1]), getTiming())
             {
-                DocSize = GetDocSize(getOpResult) + SampleDocument.Length
+                DocSize = GetDocSize(results[1]) + SampleDocument.Length
             };
         }
 

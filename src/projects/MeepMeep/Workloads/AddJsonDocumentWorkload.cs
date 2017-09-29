@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Couchbase.Core;
 using MeepMeep.Docs;
 
@@ -9,33 +10,28 @@ namespace MeepMeep.Workloads
     /// </summary>
     public class AddJsonDocumentWorkload : WorkloadBase
     {
-        private readonly string _description;
-
         protected readonly string SampleDocument;
 
         public const string DefaultKeyGenerationPart = "ajdw";
 
-        public override string Description
-        {
-            get { return _description; }
-        }
+        public override string Description { get; }
 
         public AddJsonDocumentWorkload(IWorkloadDocKeyGenerator docKeyGenerator, int workloadSize, int warmupMs, bool enableTiming, string sampleDocument = null)
             : base(docKeyGenerator, workloadSize, warmupMs, enableTiming)
         {
             SampleDocument = sampleDocument ?? SampleDocuments.Default;
-            _description = string.Format("ExecuteStore (Add) of {0} JSON doc(s) with doc size: {1}.",
+            Description = string.Format("ExecuteStore (Add) of {0} JSON doc(s) with doc size: {1}.",
                 WorkloadSize,
                 SampleDocument.Length);
         }
 
-        protected override WorkloadOperationResult OnExecuteStep(IBucket bucket, int workloadIndex, int docIndex, Func<TimeSpan> getTiming)
+        protected override async Task<WorkloadOperationResult> OnExecuteStep(IBucket bucket, int workloadIndex, int docIndex, Func<TimeSpan> getTiming)
         {
             var key = DocKeyGenerator.Generate(workloadIndex, docIndex);
 
-            var storeOpResult = bucket.Upsert(key, SampleDocument);
+            var result = await bucket.UpsertAsync(key, SampleDocument);
 
-            return new WorkloadOperationResult(storeOpResult.Success, storeOpResult.Message, getTiming())
+            return new WorkloadOperationResult(result.Success, result.Message, getTiming())
             {
                 DocSize = SampleDocument.Length
             };

@@ -1,7 +1,9 @@
 using System;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Couchbase.Core;
 using EnsureThat;
 using MeepMeep.Docs;
@@ -31,20 +33,32 @@ namespace MeepMeep.Workloads
             _enableTiming = enableTiming;
         }
 
-        public virtual WorkloadResult Execute(IBucket bucket, int workloadIndex)
+        public async Task<WorkloadResult> Execute(IBucket bucket, int workloadIndex)
         {
             Ensure.That(bucket, "bucket").IsNotNull();
 
-            var workloadResult = CreateWorkloadResult();
-            var opIndex = 0;
-            var numOfWarmups = 0;
-            var startedAt = DateTime.Now;
-            Stopwatch sw = null;
+            await OnPreExecute(bucket, workloadIndex, 0);
 
+            var workloadResult = CreateWorkloadResult();
+
+            var workloadTimer = Stopwatch.StartNew();
+            await Task.WhenAll(
+                Enumerable.Range(1, WorkloadSize).Select(index => CreateWorkloadTask(bucket, workloadIndex, 0, workloadResult))
+            );
+
+            workloadResult.TimeTaken = workloadTimer.Elapsed;
+
+            await OnPostExecute(bucket);
+
+            return workloadResult;
+        }
+
+        private Task CreateWorkloadTask(IBucket bucket, int workloadIndex, int index, WorkloadResult workloadResult)
+        {
             Func<TimeSpan> getTiming;
             if (_enableTiming)
             {
-                sw = new Stopwatch();
+                var sw = Stopwatch.StartNew();
                 getTiming = () => sw.Elapsed;
             }
             else
@@ -52,42 +66,17 @@ namespace MeepMeep.Workloads
                 getTiming = () => TimeSpan.Zero;
             }
 
-            OnPreExecute(bucket, workloadIndex, 0);
-
-            while (true)
+            try
             {
-                var isWarmingUp = IsWarmingUp(startedAt);
-                if (isWarmingUp)
-                    numOfWarmups++;
-
-                if (opIndex >= WorkloadSize + numOfWarmups)
-                    break;
-
-                WorkloadOperationResult opResult = null;
-
-                try
-                {
-                    if (_enableTiming)
-                    {
-                        sw.Restart();
-                    }
-                    opResult = OnExecuteStep(bucket, workloadIndex, 0, getTiming);
-                }
-                catch (Exception ex)
-                {
-                    opResult = new WorkloadOperationResult(ex, getTiming());
-                }
-                finally
-                {
-                    if (!isWarmingUp)
-                        workloadResult.Register(opResult);
-                }
-                opIndex++;
+                return OnExecuteStep(bucket, workloadIndex, index, getTiming)
+                    .ContinueWith(task => task.IsFaulted
+                        ? workloadResult.Register(new WorkloadOperationResult(task.Exception, getTiming()))
+                        : workloadResult.Register(task.Result));
             }
-
-            OnPostExecute(bucket);
-
-            return workloadResult;
+            catch (Exception ex)
+            {
+                return workloadResult.Register(new WorkloadOperationResult(ex, getTiming()));
+            }
         }
 
         protected virtual WorkloadResult CreateWorkloadResult()
@@ -98,21 +87,22 @@ namespace MeepMeep.Workloads
                 WorkloadSize);
         }
 
-        protected bool IsWarmingUp(DateTime startedAt)
-        {
-            return WarmupMs > 0 && WarmupMs > (DateTime.Now - startedAt).TotalMilliseconds;
-        }
-
         /// <summary>
         /// Not included in timing. Could be used to perform setup logic.
         /// </summary>
-        protected virtual void OnPreExecute(IBucket bucket, int workloadInex, int opIndex) { }
+        protected virtual Task OnPreExecute(IBucket bucket, int workloadInex, int opIndex)
+        {
+            return Task.CompletedTask;
+        }
 
         /// <summary>
         /// Not included in timing. Could be used to perform cleanup logic.
         /// </summary>
-        protected virtual void OnPostExecute(IBucket bucket) { }
+        protected virtual Task OnPostExecute(IBucket bucket)
+        {
+            return Task.CompletedTask;
+        }
 
-        protected abstract WorkloadOperationResult OnExecuteStep(IBucket bucket, int workloadIndex, int opIndex, Func<TimeSpan> getTiming);
+        protected abstract Task<WorkloadOperationResult> OnExecuteStep(IBucket bucket, int workloadIndex, int opIndex, Func<TimeSpan> getTiming);
     }
 }

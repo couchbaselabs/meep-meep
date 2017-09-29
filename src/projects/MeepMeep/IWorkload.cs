@@ -1,4 +1,5 @@
-﻿using Couchbase.Core;
+﻿using System.Threading.Tasks;
+using Couchbase.Core;
 
 namespace MeepMeep
 {
@@ -19,6 +20,6 @@ namespace MeepMeep
         /// <param name="bucket"></param>
         /// <param name="workloadIndex"></param>
         /// <returns></returns>
-        WorkloadResult Execute(IBucket bucket, int workloadIndex);
+        Task<WorkloadResult> Execute(IBucket bucket, int workloadIndex);
     }
 }

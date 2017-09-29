@@ -103,11 +103,9 @@ namespace MeepMeep
 
                 OutputWriter.Write("Running workloads...");
 
+                var workload = CreateWorkload(options);
                 var runner = CreateRunner(options);
-                foreach (var workload in CreateWorkloads(options))
-                {
-                    runner.Run(workload, bucket, OnWorkloadCompleted);
-                }
+                runner.Run(workload, bucket, OnWorkloadCompleted).Wait();
             }
 
             OutputWriter.Write("Completed");
@@ -115,15 +113,15 @@ namespace MeepMeep
 
         private static IWorkloadRunner CreateRunner(MeepMeepOptions options)
         {
-            return new TplBasedWorkloadRunner(options);
+            return new TaskBasedWorkloadRunner(options);
         }
 
-        private static IEnumerable<IWorkload> CreateWorkloads(MeepMeepOptions options)
+        private static IWorkload CreateWorkload(MeepMeepOptions options)
         {
             switch (options.WorkloadType)
             {
                 case WorkloadType.MutationPercentage:
-                    yield return new MixedGetSetJsonDocumentWorkload(
+                    return new MixedGetSetJsonDocumentWorkload(
                         new RangedWorkloadDocKeyGenerator(
                             options.DocKeyPrefix, 
                             MixedGetSetJsonDocumentWorkload.DefaultKeyGenerationPart,
@@ -135,9 +133,8 @@ namespace MeepMeep
                         options.MutationPercentage,
                         options.EnableOperationTiming,
                         SampleDocuments.ReadJsonSampleDocument(options.DocSamplePath));
-                    break;
                 case WorkloadType.SetOnly:
-                    yield return new AddJsonDocumentWorkload(
+                    return new AddJsonDocumentWorkload(
                         new RangedWorkloadDocKeyGenerator(
                             options.DocKeyPrefix, 
                             AddJsonDocumentWorkload.DefaultKeyGenerationPart, 
@@ -148,9 +145,8 @@ namespace MeepMeep
                         options.WarmupMs,
                         options.EnableOperationTiming,
                         SampleDocuments.ReadJsonSampleDocument(options.DocSamplePath));
-                    break;
                 case WorkloadType.SetAndGet:
-                    yield return new AddAndGetJsonDocumentWorkload(
+                    return new AddAndGetJsonDocumentWorkload(
                         new RangedWorkloadDocKeyGenerator(
                             options.DocKeyPrefix,
                             AddAndGetJsonDocumentWorkload.DefaultKeyGenerationPart,
@@ -160,8 +156,9 @@ namespace MeepMeep
                         options.WorkloadSize,
                         options.WarmupMs,
                         options.EnableOperationTiming);
-                    break;
             }
+
+            throw new ArgumentException($"Unknown workload type: {options.WorkloadType}");
         }
 
         private static void OnWorkloadCompleted(WorkloadResult workloadResult)

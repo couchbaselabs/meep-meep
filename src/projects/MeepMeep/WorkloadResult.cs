@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using EnsureThat;
 
 namespace MeepMeep
@@ -11,12 +13,13 @@ namespace MeepMeep
     [Serializable]
     public class WorkloadResult
     {
-        protected readonly IList<WorkloadOperationResult> OperationResults;
+        protected readonly ConcurrentBag<WorkloadOperationResult> OperationResults;
 
         public string Description { get; private set; }
         public string ThreadName { get; private set; }
         public int WorkloadSize { get; private set; }
-        public TimeSpan TimeTaken { get; private set; }
+
+        public TimeSpan TimeTaken { get; set; }
 
         public WorkloadResult(string description, string threadName, int workloadSize)
         {
@@ -26,14 +29,19 @@ namespace MeepMeep
             Description = description;
             ThreadName = threadName;
             WorkloadSize = workloadSize;
-            OperationResults = new List<WorkloadOperationResult>();
+            OperationResults = new ConcurrentBag<WorkloadOperationResult>();
             TimeTaken = new TimeSpan();
         }
 
-        public virtual void Register(WorkloadOperationResult operationResult)
+        public virtual Task Register(WorkloadOperationResult operationResult)
         {
             OperationResults.Add(operationResult);
-            TimeTaken += operationResult.TimeTaken;
+            return Task.CompletedTask;
+        }
+
+        public virtual bool HasPerOperationTimings()
+        {
+            return OperationResults.Any(o => o.TimeTaken != TimeSpan.Zero);
         }
 
         public virtual int CountOperations()
