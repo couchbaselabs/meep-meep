@@ -50,15 +50,6 @@ namespace MeepMeep
         [Option("clusterpassword", HelpText = "Password for the cluster.", DefaultValue = "password")]
         public string ClusterPassword { get; set; }
 
-        [Option("max-concurrency-level", HelpText = "Will control the maximum concurrency level used to control how many client tasks that will be executed in parallel.", DefaultValue = 100)]
-        public int? MaximumConcurrencyLevel { get; set; }
-
-        [Option("threadpool-min", HelpText = "Min number of threads to be set on the underlying shared threadpool.", DefaultValue = 2000)]
-        public int? ThreadPoolMinNumOfThreads { get; set; }
-
-        [Option("threadpool-max", HelpText = "Max number of threads to be set on the underlying shared threadpool.", DefaultValue = 4000)]
-        public int? ThreadPoolMaxNumOfThreads { get; set; }
-
         [Option('w', "warmup-ms", HelpText = "Determines how long time (ms) it takes before a work load's operation results is being seen as part of the workload.", DefaultValue = 100)]
         public int WarmupMs { get; set; }
 

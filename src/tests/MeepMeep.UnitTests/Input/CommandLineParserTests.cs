@@ -30,9 +30,6 @@ namespace MeepMeep.UnitTests.Input
             options.DocSamplePath.Should().BeEmpty();
             options.DocKeyPrefix.Should().Be("mm");
             options.DocKeySeed.Should().Be(0);
-            options.MaximumConcurrencyLevel.Should().Be(100);
-            options.ThreadPoolMinNumOfThreads.Should().Be(2000);
-            options.ThreadPoolMaxNumOfThreads.Should().Be(4000);
             options.WarmupMs.Should().Be(100);
             options.Verbose.Should().Be(false);
             options.MutationPercentage.Should().Be(0.33);

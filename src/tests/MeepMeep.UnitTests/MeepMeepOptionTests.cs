@@ -28,9 +28,6 @@ namespace MeepMeep.UnitTests
                 DocSamplePath = "c:\\foo\bar\\in_the_house.json",
                 WorkloadSize = 42,
                 NumOfClients = 13,
-                MaximumConcurrencyLevel = 1,
-                ThreadPoolMaxNumOfThreads = 1000,
-                ThreadPoolMinNumOfThreads = 500,
                 WarmupMs = 4242,
                 Verbose = true
             };
