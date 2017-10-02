@@ -72,15 +72,11 @@ namespace MeepMeep
 
             using (var cluster = new Cluster(config))
             {
-                cluster.Authenticate(new ClusterCredentials
+                var authenticator = new ClassicAuthenticator(options.ClusterUsername, options.ClusterPassword)
                 {
-                    ClusterUsername = options.ClusterUsername,
-                    ClusterPassword = options.ClusterPassword,
-                    BucketCredentials = new Dictionary<string, string>
-                    {
-                        {options.Bucket, options.BucketPassword}
-                    }
-                });
+                    BucketCredentials = {{options.Bucket, options.BucketPassword}}
+                };
+                cluster.Authenticate(authenticator);
 
                 OutputWriter.Write("Preparing bucket:");
 
