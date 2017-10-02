@@ -16,8 +16,8 @@ namespace MeepMeep.Workloads
 
         public override string Description { get; }
 
-        public AddJsonDocumentWorkload(IWorkloadDocKeyGenerator docKeyGenerator, int workloadSize, int warmupMs, bool enableTiming, string sampleDocument = null)
-            : base(docKeyGenerator, workloadSize, warmupMs, enableTiming)
+        public AddJsonDocumentWorkload(IWorkloadDocKeyGenerator docKeyGenerator, int workloadSize, int warmupMs, bool enableTiming, bool useSync, string sampleDocument = null)
+            : base(docKeyGenerator, workloadSize, warmupMs, enableTiming, useSync)
         {
             SampleDocument = sampleDocument ?? SampleDocuments.Default;
             Description = string.Format("ExecuteStore (Add) of {0} JSON doc(s) with doc size: {1}.",
@@ -25,16 +25,23 @@ namespace MeepMeep.Workloads
                 SampleDocument.Length);
         }
 
-        protected override async Task<WorkloadOperationResult> OnExecuteStep(IBucket bucket, int workloadIndex, int docIndex, Func<TimeSpan> getTiming)
+        protected override Task<WorkloadOperationResult> OnExecuteStep(IBucket bucket, int workloadIndex, int docIndex, Func<TimeSpan> getTiming)
         {
             var key = DocKeyGenerator.Generate(workloadIndex, docIndex);
 
-            var result = await bucket.UpsertAsync(key, SampleDocument);
-
-            return new WorkloadOperationResult(result.Success, result.Message, getTiming())
+            if (UseSync)
             {
-                DocSize = SampleDocument.Length
-            };
+                var upsertResult = bucket.Upsert(key, SampleDocument);
+                return Task.FromResult(
+                    new WorkloadOperationResult(upsertResult.Success, upsertResult.Message, getTiming())
+                );
+            }
+
+            return bucket.UpsertAsync(key, SampleDocument)
+                .ContinueWith(task => new WorkloadOperationResult(task.Result.Success, task.Result.Message, getTiming())
+                {
+                    DocSize = SampleDocument.Length
+                });
         }
     }
 }

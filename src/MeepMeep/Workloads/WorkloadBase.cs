@@ -18,11 +18,12 @@ namespace MeepMeep.Workloads
         protected readonly IWorkloadDocKeyGenerator DocKeyGenerator;
         protected readonly int WorkloadSize;
         protected readonly int WarmupMs;
+        protected readonly bool UseSync;
         private readonly bool _enableTiming;
 
         public abstract string Description { get; }
 
-        protected WorkloadBase(IWorkloadDocKeyGenerator docKeyGenerator, int workloadSize, int warmupMs, bool enableTiming)
+        protected WorkloadBase(IWorkloadDocKeyGenerator docKeyGenerator, int workloadSize, int warmupMs, bool enableTiming, bool useSync)
         {
             Ensure.That(docKeyGenerator, "docKeyGenerator").IsNotNull();
             Ensure.That(workloadSize, "workloadSize").IsGt(0);
@@ -30,6 +31,7 @@ namespace MeepMeep.Workloads
             DocKeyGenerator = docKeyGenerator;
             WorkloadSize = workloadSize;
             WarmupMs = warmupMs;
+            UseSync = useSync;
             _enableTiming = enableTiming;
         }
 

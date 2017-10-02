@@ -13,7 +13,7 @@ There are three `workloads` currently shipped with MeepMeep: `MutationPercentage
 
 The options are:
 ```
-  -n, --nodes                    (Default: http://127.0.0.1:8091/pools) Space separated list of nodes to connect to.
+  -n, --nodes                  (Default: couchbase://localhost) Space separated list of nodes to connect to.
 
   -b, --bucket                 (Default: default) Name of the Bucket
 
@@ -47,7 +47,12 @@ The options are:
 
   --use-json                   (Default: false) Enable writing JSON values instead of raw bytes.
 
+  --use-sync                   (Default: false) Uses a synchronous workload instead of async.
+
   --help                       Display this help screen.
 
   --version                    Display version information.
 ```
+
+# MyGet feed
+We push every incremental change to a public MyGet feed

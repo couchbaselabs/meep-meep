@@ -110,7 +110,7 @@ namespace MeepMeep
                 case WorkloadType.MutationPercentage:
                     return new MixedGetSetJsonDocumentWorkload(
                         new RangedWorkloadDocKeyGenerator(
-                            options.DocKeyPrefix, 
+                            options.DocKeyPrefix,
                             MixedGetSetJsonDocumentWorkload.DefaultKeyGenerationPart,
                             options.DocKeySeed,
                             options.DocKeyRange
@@ -119,18 +119,20 @@ namespace MeepMeep
                         options.WarmupMs,
                         options.MutationPercentage,
                         options.EnableOperationTiming,
+                        options.UseSync,
                         SampleDocuments.ReadJsonSampleDocument(options.DocSamplePath));
                 case WorkloadType.SetOnly:
                     return new AddJsonDocumentWorkload(
                         new RangedWorkloadDocKeyGenerator(
-                            options.DocKeyPrefix, 
-                            AddJsonDocumentWorkload.DefaultKeyGenerationPart, 
+                            options.DocKeyPrefix,
+                            AddJsonDocumentWorkload.DefaultKeyGenerationPart,
                             options.DocKeySeed,
                             options.DocKeyRange
                         ),
                         options.WorkloadSize,
                         options.WarmupMs,
                         options.EnableOperationTiming,
+                        options.UseSync,
                         SampleDocuments.ReadJsonSampleDocument(options.DocSamplePath));
                 case WorkloadType.SetAndGet:
                     return new AddAndGetJsonDocumentWorkload(
@@ -142,10 +144,11 @@ namespace MeepMeep
                         ),
                         options.WorkloadSize,
                         options.WarmupMs,
-                        options.EnableOperationTiming);
+                        options.EnableOperationTiming,
+                        options.UseSync);
+                default:
+                    throw new ArgumentException($"Unknown workload type: {options.WorkloadType}");
             }
-
-            throw new ArgumentException($"Unknown workload type: {options.WorkloadType}");
         }
 
         private static void OnWorkloadCompleted(WorkloadResult workloadResult)

@@ -65,6 +65,9 @@ namespace MeepMeep
         [Option("use-json", HelpText = "Enable writing JSON values instead of raw bytes.", Default = false)]
         public bool UseJson { get; set; }
 
+        [Option("use-sync", HelpText = "Uses a synchronous workload instead of async.", Default = false)]
+        public bool UseSync { get; set; }
+
         public override string ToString()
         {
             var sb = new StringBuilder();

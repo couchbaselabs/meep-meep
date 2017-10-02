@@ -6,6 +6,10 @@ using MeepMeep.Docs;
 
 namespace MeepMeep.Workloads
 {
+    /// <summary>
+    /// Workload represetning a mix of get and set operations
+    /// using a <see cref="_mutationPercentage"/>.
+    /// </summary>
     public class MixedGetSetJsonDocumentWorkload : WorkloadBase
     {
         public const string DefaultKeyGenerationPart = "ajdw";
@@ -16,8 +20,8 @@ namespace MeepMeep.Workloads
 
         public override string Description { get; }
 
-        public MixedGetSetJsonDocumentWorkload(IWorkloadDocKeyGenerator docKeyGenerator, int workloadSize, int warmupMs, double mutationPercentage, bool enableTiming, string sampleDocument = null)
-            : base(docKeyGenerator, workloadSize, warmupMs, enableTiming)
+        public MixedGetSetJsonDocumentWorkload(IWorkloadDocKeyGenerator docKeyGenerator, int workloadSize, int warmupMs, double mutationPercentage, bool enableTiming, bool useSync, string sampleDocument = null)
+            : base(docKeyGenerator, workloadSize, warmupMs, enableTiming, useSync)
         {
             Randomizer = new Random();
             SampleDocument = sampleDocument ?? SampleDocuments.Default;
@@ -30,6 +34,17 @@ namespace MeepMeep.Workloads
         protected override Task<WorkloadOperationResult> OnExecuteStep(IBucket bucket, int workloadIndex, int docIndex, Func<TimeSpan> getTiming)
         {
             var key = DocKeyGenerator.Generate(workloadIndex, docIndex);
+
+            if (UseSync)
+            {
+                var result = Randomizer.NextDouble() <= _mutationPercentage
+                    ? bucket.Upsert(key, SampleDocument)
+                    : bucket.Get<string>(key);
+
+                return Task.FromResult(
+                    new WorkloadOperationResult(result.Success, result.Message, getTiming())
+                );
+            }
 
             return (Randomizer.NextDouble() <= _mutationPercentage
                     ? bucket.UpsertAsync(key, SampleDocument)

@@ -20,26 +20,37 @@ namespace MeepMeep.Workloads
 
         public override string Description { get; }
 
-        public AddAndGetJsonDocumentWorkload(IWorkloadDocKeyGenerator docKeyGenerator, int workloadSize, int warmupMs, bool enableTiming, string sampleDocument = null)
-            : base(docKeyGenerator, workloadSize, warmupMs, enableTiming)
+        public AddAndGetJsonDocumentWorkload(IWorkloadDocKeyGenerator docKeyGenerator, int workloadSize, int warmupMs, bool enableTiming, bool useSync, string sampleDocument = null)
+            : base(docKeyGenerator, workloadSize, warmupMs, enableTiming, useSync)
         {
             SampleDocument = sampleDocument ?? SampleDocuments.Default;
             Description = string.Format("ExecuteStore (Add) and ExecuteGet by random key, {0} times.", WorkloadSize);
         }
 
-        protected override async Task<WorkloadOperationResult> OnExecuteStep(IBucket bucket, int workloadIndex, int docIndex, Func<TimeSpan> getTiming)
+        protected override Task<WorkloadOperationResult> OnExecuteStep(IBucket bucket, int workloadIndex, int docIndex, Func<TimeSpan> getTiming)
         {
             var key = DocKeyGenerator.Generate(workloadIndex, docIndex);
             var randomKey = DocKeyGenerator.Generate(workloadIndex, docIndex);
 
-            var results = await Task.WhenAll(
-                bucket.UpsertAsync(key, SampleDocument), bucket.GetAsync<string>(randomKey)
-            );
-
-            return new WorkloadOperationResult(results[0].Success && results[1].Success, GetMessage(results[0], results[1]), getTiming())
+            if (UseSync)
             {
-                DocSize = GetDocSize(results[1]) + SampleDocument.Length
-            };
+                var upsertResult = bucket.Upsert(key, SampleDocument);
+                var getResult = bucket.Get<string>(randomKey);
+
+                return Task.FromResult(
+                    new WorkloadOperationResult(upsertResult.Success && getResult.Success, GetMessage(upsertResult, getResult), getTiming())
+                );
+            }
+
+            return Task.WhenAll(
+                    bucket.UpsertAsync(key, SampleDocument), bucket.GetAsync<string>(randomKey)
+                )
+                .ContinueWith(tasks => new WorkloadOperationResult(tasks.Result[0].Success && tasks.Result[1].Success,
+                    GetMessage(tasks.Result[0], tasks.Result[1]),
+                    getTiming())
+                {
+                    DocSize = GetDocSize(tasks.Result[1]) + SampleDocument.Length
+                });
         }
 
         protected virtual string GetMessage(IOperationResult storeOpResult, IOperationResult getOpResult)
