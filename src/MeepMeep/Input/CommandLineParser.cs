@@ -17,10 +17,5 @@ namespace MeepMeep.Input
                 cfg.IgnoreUnknownArguments = false;
             });
         }
-
-        public virtual bool Parse(MeepMeepOptions options, params string[] args)
-        {
-            return InnerParser.ParseArguments(args, options);
-        }
     }
 }

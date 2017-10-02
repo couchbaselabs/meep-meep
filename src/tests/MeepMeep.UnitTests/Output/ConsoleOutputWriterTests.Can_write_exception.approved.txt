@@ -1,2 +1,0 @@
-﻿Test of exception
-My simle exception

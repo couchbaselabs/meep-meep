@@ -10,7 +10,6 @@ namespace MeepMeep
     /// <summary>
     /// Represents the result of a single workload session. Created by <see cref="IWorkload.Execute"/>.
     /// </summary>
-    [Serializable]
     public class WorkloadResult
     {
         protected readonly ConcurrentBag<WorkloadOperationResult> OperationResults;

@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
+using CommandLine;
 using Couchbase;
 using Couchbase.Authentication;
 using Couchbase.Configuration.Client;
 using Couchbase.Core.Transcoders;
 using MeepMeep.Docs;
-using MeepMeep.Input;
 using MeepMeep.Output;
 using MeepMeep.Workloads;
 using MeepMeep.Workloads.Runners;
@@ -22,47 +21,35 @@ namespace MeepMeep
         {
             try
             {
-                var options = ParseCommandLine(args);
-                if (options == null)
+                var parser = new Parser(settings =>
                 {
-                    OutputWriter.Write("Error parsing command line arguments");
-                    return;
-                }
+                    settings.IgnoreUnknownArguments = true;
+                    settings.CaseSensitive = false;
+                    settings.HelpWriter = Console.Out;
+                });
 
-                try
-                {
-                    Run(options);
-                }
-                catch (AggregateException ex)
-                {
-                    if (ex.InnerExceptions.OfType<HttpRequestException>().Any())
+                parser.ParseArguments<MeepMeepOptions>(args)
+                    .WithParsed(Run)
+                    .WithNotParsed(errors =>
                     {
-                        OutputWriter.Write("Error connecting to cluster, please verify the nodes parameter is correct");
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                        errors = errors.ToList();
+                        if (errors.Count() == 1 && errors.Any(error =>
+                                error is HelpRequestedError || error is VersionRequestedError))
+                        {
+                            return;
+                        }
+
+                        OutputWriter.Write("Error parsing command line arguments");
+                        foreach (var error in errors)
+                        {
+                            OutputWriter.Write(error.ToString());
+                        }
+                    });
             }
             catch (Exception ex)
             {
                 OutputWriter.Write("Unhandled exception.", ex);
             }
-        }
-
-        private static MeepMeepOptions ParseCommandLine(string[] args)
-        {
-            var commandLineParser = new CommandLineParser();
-            var options = new MeepMeepOptions();
-
-            if (!commandLineParser.Parse(options, args))
-            {
-                OutputWriter.Write(options.GetHelp());
-                return null;
-            }
-
-            return options;
         }
 
         private static void Run(MeepMeepOptions options)
@@ -80,7 +67,7 @@ namespace MeepMeep
                     MinSize = 1,
                     MaxSize = 1
                 },
-                Transcoder = () => options.UseJson ? new DefaultTranscoder() : new BinaryTranscoder()
+                Transcoder = () => new DefaultTranscoder()
             };
 
             using (var cluster = new Cluster(config))

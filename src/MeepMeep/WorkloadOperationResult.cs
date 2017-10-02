@@ -7,7 +7,6 @@ namespace MeepMeep
     /// Represents a single operation performed within a workload.
     /// Contained in <see cref="WorkloadResult"/>.
     /// </summary>
-    [Serializable]
     public class WorkloadOperationResult
     {
         public TimeSpan TimeTaken { get; set; }
