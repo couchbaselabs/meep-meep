@@ -10,9 +10,10 @@ For example to run with all default values:
 
 There are three `workloads` currently shipped with MeepMeep: `MutationPercentage`, `AddJsonDocumentWorkload` and  `AddAndGetJsonDocumentWorkload`.
 
-The options are:
 
-  -n                           (Default: http://127.0.0.1:8091/pools) Space separated list of nodes to connect to.
+The options are:
+```
+  -n, --nodes                    (Default: http://127.0.0.1:8091/pools) Space separated list of nodes to connect to.
 
   -b, --bucket                 (Default: default) Name of the Bucket
 
@@ -49,3 +50,4 @@ The options are:
   --help                       Display this help screen.
 
   --version                    Display version information.
+```
