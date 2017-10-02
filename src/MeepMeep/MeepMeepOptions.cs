@@ -14,7 +14,7 @@ namespace MeepMeep
     {
         protected const string NullOutputValue = "<null>";
 
-        [Option('n', Separator = ' ', HelpText = "Space separated list of nodes to connect to.", Default = new[] { "couchbase://localhost" })]
+        [Option('n', "nodes", Separator = ' ', HelpText = "Space separated list of nodes to connect to.", Default = new[] { "couchbase://localhost" })]
         public IEnumerable<string> Nodes { get; set; }
 
         [Option('b', "bucket", HelpText = "Name of the Bucket", Default = "default")]
