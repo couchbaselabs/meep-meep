@@ -54,5 +54,14 @@ The options are:
   --version                    Display version information.
 ```
 
+# Authentication with Couchbase Server 5.0+ (RBAC)
+
+From Couchbase Server 5.0, Role based authentication was introduced which replaced the previous bucket password. To test a Cluster that is RBAC enabled, you will need to create a user with the same name as the bucket you want to test with.
+
+For example:
+```
+dotnet MeepMeep.dll --nodes "couchbase://10.112.180.101" --bucket "test" --bucketpassword "password123"
+```
+
 # MyGet feed
 We push every incremental change to a public MyGet feed
