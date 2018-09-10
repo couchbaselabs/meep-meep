@@ -67,7 +67,9 @@ namespace MeepMeep
                     MinSize = 1,
                     MaxSize = 1
                 },
-                Transcoder = () => new DefaultTranscoder()
+                Transcoder = () => new DefaultTranscoder(),
+                OperationTracingEnabled = false,
+                OrphanedResponseLoggingEnabled = false
             };
 
             using (var cluster = new Cluster(config))
