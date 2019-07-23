@@ -2,6 +2,8 @@
 
 MeepMeep is a simple sample of a workload console app that can be used to simulate workloads against a Couchbase cluster using the .Net client.
 
+## NOTE: Not supported under Couchbase Enterprise Support Subscriptions! ##
+
 # Usage
 MeepMeep is a simple console application. Run it with the `--help` switch to show help text that describes each available option.
 
