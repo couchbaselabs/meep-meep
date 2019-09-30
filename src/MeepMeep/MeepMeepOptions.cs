@@ -68,6 +68,9 @@ namespace MeepMeep
         [Option("use-sync", HelpText = "Uses a synchronous workload instead of async.", Default = false)]
         public bool UseSync { get; set; }
 
+		[Option("use-ssl", HelpText = "Enable SSL connections between client and Couchbase Server", Default = false)]
+		public bool UseSsl { get; set; }
+
         public override string ToString()
         {
             var sb = new StringBuilder();

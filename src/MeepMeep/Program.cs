@@ -69,7 +69,8 @@ namespace MeepMeep
                 },
                 Transcoder = () => new DefaultTranscoder(),
                 OperationTracingEnabled = false,
-                OrphanedResponseLoggingEnabled = false
+                OrphanedResponseLoggingEnabled = false,
+				UseSsl = options.UseSsl
             };
 
             using (var cluster = new Cluster(config))
