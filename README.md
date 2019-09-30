@@ -1,20 +1,40 @@
 # MeepMeep [![Build status](https://ci.appveyor.com/api/projects/status/yxxv2cmrgdocbr9j/branch/master?svg=true)](https://ci.appveyor.com/project/Couchbase/meep-meep/branch/master)
 
-MeepMeep is a simple sample of a workload console app that can be used to simulate workloads against a Couchbase cluster using the .Net client.
+MeepMeep is a simple workload generator that can be used to simulate workloads against a Couchbase cluster using the .NET client.
 
-## NOTE: Not supported under Couchbase Enterprise Support Subscriptions! ##
+## NOTE: Not supported under Couchbase Enterprise Support Subscriptions
 
-# Usage
+## Building & running
+
+You can build and run the project from the root of the project like this:
+
+```bash
+dotnet build
+dotnet run -p src/MeepMeep/MeepMeep.csproj
+```
+
+## Authentication with Couchbase Server 5.0+ (RBAC)
+
+From Couchbase Server 5.0, Role based authentication was introduced which replaced the previous bucket password. To test a Cluster that is RBAC enabled, you will need to create a user with the same name as the bucket you want to test with.
+
+For example:
+
+```bash
+dotnet run -p src/MeepMeep/MeepMeep.csproj --bucket test --bucketpassword password123
+```
+
+## Options
+
 MeepMeep is a simple console application. Run it with the `--help` switch to show help text that describes each available option.
 
 For example to run with all default values:
-`dotnet MeepMeep.ddl`.
+`dotnet run -p src/MeepMeep/MeepMeep.csproj`.
 
 There are three `workloads` currently shipped with MeepMeep: `MutationPercentage`, `AddJsonDocumentWorkload` and  `AddAndGetJsonDocumentWorkload`.
 
-
 The options are:
-```
+
+```bash
   -n, --nodes                  (Default: couchbase://localhost) Space separated list of nodes to connect to.
 
   -b, --bucket                 (Default: default) Name of the Bucket
@@ -62,14 +82,6 @@ The options are:
   --version                    Display version information.
 ```
 
-# Authentication with Couchbase Server 5.0+ (RBAC)
+## MyGet feed
 
-From Couchbase Server 5.0, Role based authentication was introduced which replaced the previous bucket password. To test a Cluster that is RBAC enabled, you will need to create a user with the same name as the bucket you want to test with.
-
-For example:
-```
-dotnet MeepMeep.dll --nodes "couchbase://10.112.180.101" --bucket "test" --bucketpassword "password123"
-```
-
-# MyGet feed
 We push every incremental change to a public MyGet feed
