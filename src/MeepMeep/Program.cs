@@ -64,8 +64,8 @@ namespace MeepMeep
                 Servers = options.Nodes.Select(x => new Uri(x)).ToList(),
                 PoolConfiguration = new PoolConfiguration
                 {
-                    MinSize = 1,
-                    MaxSize = 1
+                    MinSize = options.PoolMin,
+                    MaxSize = options.PoolMax
                 },
                 Transcoder = () => new DefaultTranscoder(),
                 OperationTracingEnabled = false,

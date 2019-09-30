@@ -71,6 +71,12 @@ namespace MeepMeep
 		[Option("use-ssl", HelpText = "Enable SSL connections between client and Couchbase Server", Default = false)]
 		public bool UseSsl { get; set; }
 
+		[Option("pool-min", HelpText = "Sets the minimum connection pool size.", Default = 1)]
+		public int PoolMin { get; set; }
+
+		[Option("pool-max", HelpText = "Sets the maximum connection pool size.", Default = 1)]
+		public int PoolMax { get; set; }
+
         public override string ToString()
         {
             var sb = new StringBuilder();

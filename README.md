@@ -51,11 +51,15 @@ The options are:
 
   --use-sync                   (Default: false) Uses a synchronous workload instead of async.
 
+  --use-ssl                    (Default: false) Enable SSL connections between client and Couchbase server.
+
+  --pool-min                   (Default: 1) Sets the minimum connection pool size.
+
+  --pool-max                   (Default: 1) Sets the maximum connection pool size.
+
   --help                       Display this help screen.
 
   --version                    Display version information.
-
-  --use-ssl                    (Default: false) Enable SSL connections between client and Couchbase server.
 ```
 
 # Authentication with Couchbase Server 5.0+ (RBAC)
