@@ -73,6 +73,11 @@ namespace MeepMeep
 				UseSsl = options.UseSsl
             };
 
+            if (options.IgnoreCertNames)
+            {
+                ClientConfiguration.IgnoreRemoteCertificateNameMismatch = true;
+            }
+
             using (var cluster = new Cluster(config))
             {
                 var authenticator = new ClassicAuthenticator(options.ClusterUsername, options.ClusterPassword)

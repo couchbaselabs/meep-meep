@@ -73,6 +73,8 @@ The options are:
 
   --use-ssl                    (Default: false) Enable SSL connections between client and Couchbase server.
 
+  --ignore-cert-names          (Default: false) Ignores SSL certificate name mismatches.
+
   --pool-min                   (Default: 1) Sets the minimum connection pool size.
 
   --pool-max                   (Default: 1) Sets the maximum connection pool size.
