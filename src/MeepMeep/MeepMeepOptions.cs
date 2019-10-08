@@ -80,6 +80,9 @@ namespace MeepMeep
 		[Option("pool-max", HelpText = "Sets the maximum connection pool size.", Default = 1)]
 		public int PoolMax { get; set; }
 
+        [Option("flush-bucket", HelpText = "Flush the bucket before executing workloads.", Default = false)]
+        public bool FlushBucket { get; set; }
+
         public override string ToString()
         {
             var sb = new StringBuilder();

@@ -86,11 +86,15 @@ namespace MeepMeep
                 };
                 cluster.Authenticate(authenticator);
 
-                OutputWriter.Write("Preparing bucket:");
-
+                OutputWriter.Write("Connecting to cluster...");
                 var bucket = cluster.OpenBucket(options.Bucket);
-                var bucketManager = bucket.CreateManager();
-                bucketManager.Flush();
+
+                if (options.FlushBucket)
+                {
+                    OutputWriter.Write("Flushing bucket:");
+                    var bucketManager = bucket.CreateManager();
+                    bucketManager.Flush();
+                }
 
                 OutputWriter.Write("Running workloads...");
 
