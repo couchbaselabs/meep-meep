@@ -70,12 +70,12 @@ namespace MeepMeep
                 Transcoder = () => new DefaultTranscoder(),
                 OperationTracingEnabled = false,
                 OrphanedResponseLoggingEnabled = false,
-				UseSsl = options.UseSsl
+                UseSsl = options.UseSsl
             };
 
-            if (options.IgnoreCertNames)
+            if (!options.VerifySslCerts)
             {
-                ClientConfiguration.IgnoreRemoteCertificateNameMismatch = true;
+                config.KvServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true;
             }
 
             using (var cluster = new Cluster(config))

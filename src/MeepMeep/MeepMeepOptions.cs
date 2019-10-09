@@ -71,8 +71,8 @@ namespace MeepMeep
 		[Option("use-ssl", HelpText = "Enable SSL connections between client and Couchbase Server", Default = false)]
 		public bool UseSsl { get; set; }
 
-        [Option("ignore-cert-names", HelpText = "Ignores SSL certificate name mismatches", Default = false)]
-		public bool IgnoreCertNames { get; set; }
+        [Option("verify-ssl-certs", HelpText = "Verify SSL certificates.", Default = false)]
+		public bool VerifySslCerts { get; set; }
 
 		[Option("pool-min", HelpText = "Sets the minimum connection pool size.", Default = 1)]
 		public int PoolMin { get; set; }
