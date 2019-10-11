@@ -91,7 +91,7 @@ namespace MeepMeep
 
                 if (options.FlushBucket)
                 {
-                    OutputWriter.Write("Flushing bucket:");
+                    OutputWriter.Write("Flushing bucket: {0}", options.Bucket);
                     var bucketManager = bucket.CreateManager();
                     bucketManager.Flush();
                 }
