@@ -18,5 +18,6 @@
     <PackageReference Include="CouchbaseNetClient" Version="2.7.12" />
     <PackageReference Include="Ensure.That" Version="8.0.0" />
     <PackageReference Include="System.Net.Http" Version="4.3.3" />
+    <PackageReference Include="RateLimiter" Version="2.1.0" />
   </ItemGroup>
 </Project>

@@ -1,3 +1,4 @@
+using ComposableAsync;
 using System;
 using System.Diagnostics;
 using System.Globalization;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 using Couchbase.Core;
 using EnsureThat;
 using MeepMeep.Docs;
+using RateLimiter;
 
 namespace MeepMeep.Workloads
 {
@@ -19,11 +21,12 @@ namespace MeepMeep.Workloads
         protected readonly int WorkloadSize;
         protected readonly int WarmupMs;
         protected readonly bool UseSync;
+        protected readonly int _rateLimit;
         private readonly bool _enableTiming;
 
         public abstract string Description { get; }
 
-        protected WorkloadBase(IWorkloadDocKeyGenerator docKeyGenerator, int workloadSize, int warmupMs, bool enableTiming, bool useSync)
+        protected WorkloadBase(IWorkloadDocKeyGenerator docKeyGenerator, int workloadSize, int warmupMs, bool enableTiming, bool useSync, int rateLimit)
         {
             Ensure.That(docKeyGenerator, "docKeyGenerator").IsNotNull();
             Ensure.That(workloadSize, "workloadSize").IsGt(0);
@@ -32,6 +35,7 @@ namespace MeepMeep.Workloads
             WorkloadSize = workloadSize;
             WarmupMs = warmupMs;
             UseSync = useSync;
+            _rateLimit = rateLimit;
             _enableTiming = enableTiming;
         }
 
@@ -44,9 +48,23 @@ namespace MeepMeep.Workloads
             var workloadResult = CreateWorkloadResult();
 
             var workloadTimer = Stopwatch.StartNew();
-            await Task.WhenAll(
-                Enumerable.Range(1, WorkloadSize).Select(index => CreateWorkloadTask(bucket, workloadIndex, 0, workloadResult))
-            );
+            if (_rateLimit == 0)
+            {
+                await Task.WhenAll(
+                    Enumerable.Range(1, WorkloadSize).Select(index => CreateWorkloadTask(bucket, workloadIndex, 0, workloadResult))
+                );
+            }
+            else
+            {
+                var timeConstraint = TimeLimiter.GetFromMaxCountByInterval(_rateLimit, TimeSpan.FromSeconds(1));
+                await Task.WhenAll(
+                    Enumerable.Range(1, WorkloadSize).Select(async index =>
+                    {
+                        await timeConstraint;
+                        return CreateWorkloadTask(bucket, workloadIndex, 0, workloadResult);
+                    })
+                );
+            }
 
             workloadResult.TimeTaken = workloadTimer.Elapsed;
 

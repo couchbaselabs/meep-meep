@@ -128,6 +128,7 @@ namespace MeepMeep
                         options.MutationPercentage,
                         options.EnableOperationTiming,
                         options.UseSync,
+                        options.RateLimit,
                         SampleDocuments.ReadJsonSampleDocument(options.DocSamplePath));
                 case WorkloadType.SetOnly:
                     return new AddJsonDocumentWorkload(
@@ -141,6 +142,7 @@ namespace MeepMeep
                         options.WarmupMs,
                         options.EnableOperationTiming,
                         options.UseSync,
+                        options.RateLimit,
                         SampleDocuments.ReadJsonSampleDocument(options.DocSamplePath));
                 case WorkloadType.SetAndGet:
                     return new AddAndGetJsonDocumentWorkload(
@@ -153,7 +155,8 @@ namespace MeepMeep
                         options.WorkloadSize,
                         options.WarmupMs,
                         options.EnableOperationTiming,
-                        options.UseSync);
+                        options.UseSync,
+                        options.RateLimit);
                 default:
                     throw new ArgumentException($"Unknown workload type: {options.WorkloadType}");
             }

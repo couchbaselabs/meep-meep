@@ -20,8 +20,8 @@ namespace MeepMeep.Workloads
 
         public override string Description { get; }
 
-        public MixedGetSetJsonDocumentWorkload(IWorkloadDocKeyGenerator docKeyGenerator, int workloadSize, int warmupMs, double mutationPercentage, bool enableTiming, bool useSync, string sampleDocument = null)
-            : base(docKeyGenerator, workloadSize, warmupMs, enableTiming, useSync)
+        public MixedGetSetJsonDocumentWorkload(IWorkloadDocKeyGenerator docKeyGenerator, int workloadSize, int warmupMs, double mutationPercentage, bool enableTiming, bool useSync, int rateLimit, string sampleDocument = null)
+            : base(docKeyGenerator, workloadSize, warmupMs, enableTiming, useSync, rateLimit)
         {
             Randomizer = new Random();
             SampleDocument = sampleDocument ?? SampleDocuments.Default;

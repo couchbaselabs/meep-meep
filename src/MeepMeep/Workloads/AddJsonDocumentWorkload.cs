@@ -16,8 +16,8 @@ namespace MeepMeep.Workloads
 
         public override string Description { get; }
 
-        public AddJsonDocumentWorkload(IWorkloadDocKeyGenerator docKeyGenerator, int workloadSize, int warmupMs, bool enableTiming, bool useSync, string sampleDocument = null)
-            : base(docKeyGenerator, workloadSize, warmupMs, enableTiming, useSync)
+        public AddJsonDocumentWorkload(IWorkloadDocKeyGenerator docKeyGenerator, int workloadSize, int warmupMs, bool enableTiming, bool useSync, int rateLimit, string sampleDocument = null)
+            : base(docKeyGenerator, workloadSize, warmupMs, enableTiming, useSync, rateLimit)
         {
             SampleDocument = sampleDocument ?? SampleDocuments.Default;
             Description = string.Format("ExecuteStore (Add) of {0} JSON doc(s) with doc size: {1}.",

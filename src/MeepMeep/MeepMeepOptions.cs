@@ -83,6 +83,9 @@ namespace MeepMeep
         [Option("flush-bucket", HelpText = "Flush the bucket before executing workloads.", Default = false)]
         public bool FlushBucket { get; set; }
 
+        [Option("rate-limit", HelpText = "Limits the number of operations per second. Zero applies no limit.", Default = 0)]
+        public int RateLimit { get; set; }
+
         public override string ToString()
         {
             var sb = new StringBuilder();
