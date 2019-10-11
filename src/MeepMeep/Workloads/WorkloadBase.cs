@@ -50,20 +50,19 @@ namespace MeepMeep.Workloads
             var workloadTimer = Stopwatch.StartNew();
             if (_rateLimit == 0)
             {
-                await Task.WhenAll(
-                    Enumerable.Range(1, WorkloadSize).Select(index => CreateWorkloadTask(bucket, workloadIndex, 0, workloadResult))
-                );
+                for (var i = 0; i < WorkloadSize; i++)
+                {
+                    await CreateWorkloadTask(bucket, workloadIndex, 0, workloadResult);
+                }
             }
             else
             {
                 var timeConstraint = TimeLimiter.GetFromMaxCountByInterval(_rateLimit, TimeSpan.FromSeconds(1));
-                await Task.WhenAll(
-                    Enumerable.Range(1, WorkloadSize).Select(async index =>
-                    {
-                        await timeConstraint;
-                        return CreateWorkloadTask(bucket, workloadIndex, 0, workloadResult);
-                    })
-                );
+                for (var i = 0; i < WorkloadSize; i++)
+                {
+                    await timeConstraint;
+                    await CreateWorkloadTask(bucket, workloadIndex, 0, workloadResult);
+                }
             }
 
             workloadResult.TimeTaken = workloadTimer.Elapsed;
